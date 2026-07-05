@@ -1,0 +1,18 @@
+
+> lucas-portfolio@0.1.0 dev
+> next dev
+
+▲ Next.js 16.2.9 (Turbopack)
+- Local:         http://localhost:3000
+- Network:       http://10.19.11.111:3000
+✓ Ready in 1153ms
+Creating turbopack project {
+  dir: 'C:\\Users\\lucas.frery\\Documents\\lucas-portfolio',
+  testMode: true
+}
+
+ GET / 200 in 527ms (next.js: 246ms, application-code: 281ms)
+ GET / 200 in 139ms (next.js: 7ms, application-code: 131ms)
+ GET /projects/simulation-control-unit 200 in 606ms (next.js: 532ms, generate-params: 486ms, application-code: 74ms)
+ GET /projects/simulation-control-unit 200 in 83ms (next.js: 14ms, generate-params: 10ms, application-code: 69ms)
+ GET / 200 in 48ms (next.js: 3ms, application-code: 45ms)
