@@ -45,7 +45,7 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
       <header className="border-b border-white/10 bg-[#05070a]/95">
         <nav className="mx-auto flex max-w-6xl items-center justify-between px-5 py-4">
           <Link href="/" className="text-sm font-semibold text-cyan-200">
-            Lucas Fr&eacute;ry
+            Lucas Frery
           </Link>
           <Link
             href="/#projects"

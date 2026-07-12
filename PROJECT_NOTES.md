@@ -1,4 +1,4 @@
-﻿# Lucas Fréry — E-Portfolio Website Notes
+﻿# Lucas Frery — E-Portfolio Website Notes
 
 ## Project objective
 

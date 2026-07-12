@@ -7,16 +7,16 @@ const skills = [
   {
     category: "Hardware Design",
     items:
-      "PCB design, schematics, layout review, signal conditioning, ESD/EMI protection, power electronics, HSD/LSD, H-bridge",
+      "PCB design, hierarchical schematics and reusable blocks, layout, signal conditioning, ESD/EMI protection, power electronics, driver circuits",
   },
   {
     category: "Embedded Interfaces",
     items:
-      "STM32, SPI, I2C, UART, CAN, LIN, Ethernet RMII, USB-UART, PWM, ADC/DAC",
+      "STM32, SPI, I²C, UART, CAN, LIN, Ethernet, PWM, bridge conversion, ADC/DAC",
   },
   {
     category: "EDA Tools",
-    items: "KiCad, Altium, LTspice, STM32CubeMX",
+    items: "KiCad, Altium Designer, LTspice, STM32CubeMX",
   },
   {
     category: "Programming",
@@ -55,14 +55,25 @@ const experience = [
 
 export default function Home() {
   return (
-    <main className="min-h-screen overflow-hidden bg-[#05070a] text-slate-100">
-      <header className="sticky top-0 z-30 border-b border-white/10 bg-[#05070a]/90 backdrop-blur">
+    <main className="relative min-h-screen overflow-hidden bg-[#05070a] text-slate-100">
+      <Image
+        src="/hero-pcb-background.jpeg"
+        alt=""
+        width={1920}
+        height={1080}
+        aria-hidden="true"
+        className="pointer-events-none fixed inset-0 z-0 h-screen w-screen object-cover opacity-80"
+        sizes="100vw"
+      />
+      <div className="pointer-events-none fixed inset-0 z-0 bg-[#05070a]/35" />
+      <div className="pointer-events-none fixed inset-0 z-0 bg-gradient-to-r from-[#05070a]/90 via-[#05070a]/55 to-[#05070a]/20" />
+      <header className="sticky top-0 z-30 border-b border-white/10 bg-[linear-gradient(180deg,#071225_0%,#050b18_100%)] shadow-[inset_0_-18px_35px_rgba(0,0,0,0.18)] backdrop-blur">
         <nav
           className="mx-auto flex max-w-7xl items-center justify-between px-5 py-4"
           aria-label="Main navigation"
         >
           <a href="#top" className="font-semibold text-white">
-            Lucas Fr&eacute;ry
+            Lucas Frery
           </a>
           <div className="hidden items-center gap-6 text-sm text-slate-300 md:flex">
             <a href="#about" className="transition hover:text-cyan-300">
@@ -86,9 +97,8 @@ export default function Home() {
 
       <section
         id="top"
-        className="relative border-b border-white/10 px-5 py-16 sm:py-20"
+        className="relative z-10 overflow-hidden border-b border-white/10 px-5 py-16 sm:py-20"
       >
-        <div className="absolute inset-0 opacity-25 circuit-grid" />
         <div className="absolute inset-x-0 bottom-0 h-32 bg-gradient-to-t from-cyan-950/20 to-transparent" />
         <div className="relative mx-auto grid max-w-7xl gap-10 lg:grid-cols-[1.25fr_0.75fr] lg:items-center">
           <div>
@@ -96,10 +106,10 @@ export default function Home() {
               LUCAS FRERY
             </h1>
             <p className="mt-5 text-2xl font-bold uppercase text-white sm:text-3xl">
-              HARDWARE ELECTRONICS ENGINEER
+              ELECTRONICS HARDWARE ENGINEER
             </p>
             <p className="mt-3 text-lg font-semibold uppercase text-cyan-300 sm:text-xl">
-              PCB | EMBEDDED SYSTEM | VALIDATION
+              PCB | EMBEDDED SYSTEMS | SYSTEM INTEGRATION
             </p>
             <p className="mt-8 max-w-3xl text-lg leading-8 text-slate-300">
               I design hardware from requirements to validation: mixed-signal
@@ -130,12 +140,12 @@ export default function Home() {
 
           <div className="relative overflow-hidden rounded-lg border border-cyan-300/20 bg-slate-950 shadow-2xl shadow-cyan-950/30">
             <Image
-              src="/electronics-workbench-hero.png"
-              alt="Electronics workbench with PCB debugging tools, oscilloscope, STM32 books and robotics notes"
+              src="/lucas-frery-portrait.png"
+              alt="Portrait of Lucas Frery"
               width={1222}
               height={1222}
               preload
-              className="aspect-square w-full object-cover"
+              className="aspect-square w-full object-cover object-[center_28%]"
               sizes="(max-width: 1024px) 100vw, 36vw"
             />
             <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-[#05070a]/70 via-transparent to-cyan-950/10" />
@@ -144,7 +154,10 @@ export default function Home() {
         </div>
       </section>
 
-      <section id="about" className="border-b border-white/10 px-5 py-16">
+      <section
+        id="about"
+        className="relative z-10 border-b border-white/10 bg-[linear-gradient(180deg,#071225_0%,#050b18_100%)] px-5 py-16 shadow-[inset_0_24px_60px_rgba(0,0,0,0.24)]"
+      >
         <div className="mx-auto grid max-w-7xl gap-10 lg:grid-cols-[0.65fr_1.35fr]">
           <div>
             <p className="text-sm font-semibold uppercase text-cyan-300">
@@ -194,7 +207,7 @@ export default function Home() {
         </div>
       </section>
 
-      <section id="projects" className="px-5 py-16 sm:py-20">
+      <section id="projects" className="relative z-10 px-5 py-16 sm:py-20">
         <div className="mx-auto max-w-7xl">
           <h2 className="text-sm font-semibold uppercase text-cyan-300">
             Latest projects
@@ -223,7 +236,7 @@ export default function Home() {
               <Link
                 href={`/projects/${project.slug}`}
                 key={project.slug}
-                className="group overflow-hidden rounded-lg border border-white/10 bg-white/[0.03] transition duration-300 hover:-translate-y-1 hover:border-cyan-300/60 hover:bg-cyan-300/[0.04]"
+                className="group overflow-hidden rounded-lg border border-white/10 bg-[linear-gradient(180deg,#071225_0%,#030712_100%)] shadow-[0_18px_45px_rgba(0,0,0,0.28)] transition duration-300 hover:-translate-y-1 hover:border-cyan-300/60 hover:shadow-[0_22px_55px_rgba(0,0,0,0.38)]"
               >
                 <div className="relative aspect-video overflow-hidden border-b border-white/10">
                   <Image
@@ -264,7 +277,7 @@ export default function Home() {
 
       <section
         id="experience"
-        className="border-y border-white/10 bg-slate-950 px-5 py-16"
+        className="relative z-10 border-y border-white/10 bg-[linear-gradient(180deg,#071225_0%,#050b18_100%)] px-5 py-16 shadow-[inset_0_24px_60px_rgba(0,0,0,0.24)]"
       >
         <div className="mx-auto max-w-7xl">
           <p className="text-sm font-semibold uppercase text-cyan-300">
@@ -299,7 +312,7 @@ export default function Home() {
         </div>
       </section>
 
-      <section id="skills" className="px-5 py-16 sm:py-20">
+      <section id="skills" className="relative z-10 px-5 py-16 sm:py-20">
         <div className="mx-auto max-w-7xl">
           <p className="text-sm font-semibold uppercase text-cyan-300">
             Skills
@@ -322,7 +335,7 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="border-y border-white/10 bg-slate-950 px-5 py-16">
+      <section className="relative z-10 border-y border-white/10 bg-[linear-gradient(180deg,#071225_0%,#050b18_100%)] px-5 py-16 shadow-[inset_0_24px_60px_rgba(0,0,0,0.24)]">
         <div className="mx-auto max-w-7xl">
           <p className="text-sm font-semibold uppercase text-cyan-300">
             Education
@@ -339,8 +352,8 @@ export default function Home() {
         </div>
       </section>
 
-      <section id="contact" className="px-5 py-16 sm:py-20">
-        <div className="mx-auto grid max-w-7xl gap-8 rounded-lg border border-cyan-300/20 bg-cyan-300/5 p-6 sm:p-8 lg:grid-cols-[0.85fr_1.15fr] lg:items-start">
+      <section id="contact" className="relative z-10 px-5 py-16 sm:py-20">
+        <div className="mx-auto grid max-w-7xl gap-8 rounded-lg border border-cyan-300/20 bg-[linear-gradient(180deg,#071225_0%,#030712_100%)] p-6 shadow-[0_18px_45px_rgba(0,0,0,0.28)] sm:p-8 lg:grid-cols-[0.85fr_1.15fr] lg:items-start">
           <div>
             <p className="text-sm font-semibold uppercase text-cyan-300">
               Contact
@@ -356,6 +369,21 @@ export default function Home() {
           <ContactForm />
         </div>
       </section>
+
+      <footer className="relative z-10 border-t border-white/10 bg-[linear-gradient(180deg,#071225_0%,#050b18_100%)] px-5 py-6 shadow-[inset_0_18px_35px_rgba(0,0,0,0.18)]">
+        <div className="mx-auto grid max-w-7xl gap-3 text-sm text-slate-300 sm:grid-cols-3 sm:items-center">
+          <p className="sm:justify-self-start">
+            &copy; 2026 Lucas Frery. All rights reserved.
+          </p>
+          <Link
+            href="/privacy-policy"
+            className="font-semibold text-cyan-300 transition hover:text-cyan-200 sm:justify-self-center"
+          >
+            Privacy Policy
+          </Link>
+          <span aria-hidden="true" className="hidden sm:block" />
+        </div>
+      </footer>
     </main>
   );
 }

@@ -13,9 +13,9 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Lucas Frery | Hardware Electronics Engineer",
+  title: "Lucas Frery | Electronics Hardware Engineer",
   description:
-    "Hardware electronics portfolio focused on PCB design, embedded control, STM32 systems, automotive validation, robotics and freelance engineering work.",
+    "Hardware electronics portfolio focused on PCB design, embedded control, STM32 systems, automotive validation and robotics.",
 };
 
 export default function RootLayout({
