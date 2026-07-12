@@ -1,24 +1,35 @@
 import Image from "next/image";
 import Link from "next/link";
+import { ContactForm } from "@/components/contact-form";
 import { projects } from "@/data/projects";
 
 const skills = [
-  "PCB design",
-  "Schematic design",
-  "Signal conditioning",
-  "ESD / EMI protection",
-  "Power drivers",
-  "STM32",
-  "SPI / I2C / UART",
-  "CAN / LIN",
-  "Ethernet RMII",
-  "PWM",
-  "ADC / DAC",
-  "MATLAB / Simulink",
-  "C / C++",
-  "Scilab",
-  "Validation testing",
-  "Root-cause analysis",
+  {
+    category: "Hardware Design",
+    items:
+      "PCB design, schematics, layout review, signal conditioning, ESD/EMI protection, power electronics, HSD/LSD, H-bridge",
+  },
+  {
+    category: "Embedded Interfaces",
+    items:
+      "STM32, SPI, I2C, UART, CAN, LIN, Ethernet RMII, USB-UART, PWM, ADC/DAC",
+  },
+  {
+    category: "EDA Tools",
+    items: "KiCad, Altium, LTspice, STM32CubeMX",
+  },
+  {
+    category: "Programming",
+    items: "C, C++, Python, MATLAB/Simulink, Scilab, LaTeX",
+  },
+  {
+    category: "Mechanical & FEA",
+    items: "SolidWorks, CATIA, 3DEXPERIENCE",
+  },
+  {
+    category: "Languages",
+    items: "French native, English fluent, Spanish elementary",
+  },
 ];
 
 const experience = [
@@ -186,8 +197,23 @@ export default function Home() {
           <h2 className="text-sm font-semibold uppercase text-cyan-300">
             Latest projects
           </h2>
-          <p className="mt-3 text-3xl font-bold text-white sm:text-4xl">
-            Problem, Analysis, Solution, Results.
+          <p
+            className="mt-3 flex flex-wrap items-center gap-x-3 gap-y-2 text-3xl font-bold text-white sm:text-4xl"
+            aria-label="Problem to Analysis to Solution to Results"
+          >
+            <span>Problem</span>
+            <span className="text-white" aria-hidden="true">
+              &rarr;
+            </span>
+            <span>Analysis</span>
+            <span className="text-white" aria-hidden="true">
+              &rarr;
+            </span>
+            <span>Solution</span>
+            <span className="text-white" aria-hidden="true">
+              &rarr;
+            </span>
+            <span>Results.</span>
           </p>
 
           <div className="mt-10 grid gap-6 lg:grid-cols-2">
@@ -272,29 +298,24 @@ export default function Home() {
       </section>
 
       <section id="skills" className="px-5 py-16 sm:py-20">
-        <div className="mx-auto grid max-w-7xl gap-10 lg:grid-cols-[0.8fr_1.2fr]">
-          <div>
-            <p className="text-sm font-semibold uppercase text-cyan-300">
-              Skills
-            </p>
-            <h2 className="mt-3 text-3xl font-bold text-white">
-              Recruiter-readable keywords, backed by project evidence.
-            </h2>
-            <p className="mt-4 leading-7 text-slate-300">
-              The homepage makes the skill set easy to scan. Each project page
-              then proves those skills through context, implementation and
-              validation results.
-            </p>
-          </div>
-          <div className="flex flex-wrap gap-3">
-            {skills.map((skill) => (
-              <span
-                key={skill}
-                className="rounded-lg border border-white/10 bg-white/[0.03] px-4 py-3 text-sm text-slate-200 transition hover:border-cyan-300/50 hover:text-cyan-100"
-              >
-                {skill}
-              </span>
-            ))}
+        <div className="mx-auto max-w-7xl">
+          <p className="text-sm font-semibold uppercase text-cyan-300">
+            Skills
+          </p>
+          <h2 className="mt-3 text-3xl font-bold text-white sm:text-4xl">
+            Skills proven through real engineering projects.
+          </h2>
+          <div className="mt-8">
+            <dl className="space-y-3 text-sm leading-6 text-slate-200 sm:text-base">
+              {skills.map((skill) => (
+                <div key={skill.category} className="sm:flex sm:gap-2">
+                  <dt className="font-semibold text-white sm:shrink-0">
+                    {skill.category}:
+                  </dt>
+                  <dd className="text-slate-300">{skill.items}</dd>
+                </div>
+              ))}
+            </dl>
           </div>
         </div>
       </section>
@@ -317,7 +338,7 @@ export default function Home() {
       </section>
 
       <section id="contact" className="px-5 py-16 sm:py-20">
-        <div className="mx-auto flex max-w-7xl flex-col gap-6 rounded-lg border border-cyan-300/20 bg-cyan-300/5 p-6 sm:p-8 lg:flex-row lg:items-center lg:justify-between">
+        <div className="mx-auto grid max-w-7xl gap-8 rounded-lg border border-cyan-300/20 bg-cyan-300/5 p-6 sm:p-8 lg:grid-cols-[0.85fr_1.15fr] lg:items-start">
           <div>
             <p className="text-sm font-semibold uppercase text-cyan-300">
               Contact
@@ -330,20 +351,7 @@ export default function Home() {
               for robotic and embedded control systems.
             </p>
           </div>
-          <div className="flex flex-wrap gap-3">
-            <a
-              href="mailto:lucas.frery@gmail.com"
-              className="rounded-lg bg-cyan-300 px-5 py-3 text-sm font-semibold text-slate-950 transition hover:bg-cyan-200"
-            >
-              Email me
-            </a>
-            <a
-              href="https://www.linkedin.com/in/lucas-frery-466021255/"
-              className="rounded-lg border border-white/15 px-5 py-3 text-sm font-semibold text-white transition hover:border-cyan-300 hover:text-cyan-200"
-            >
-              LinkedIn
-            </a>
-          </div>
+          <ContactForm />
         </div>
       </section>
     </main>
