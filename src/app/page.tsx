@@ -90,16 +90,18 @@ export default function Home() {
       >
         <div className="absolute inset-0 opacity-25 circuit-grid" />
         <div className="absolute inset-x-0 bottom-0 h-32 bg-gradient-to-t from-cyan-950/20 to-transparent" />
-        <div className="relative mx-auto grid max-w-7xl gap-10 lg:grid-cols-[1.02fr_0.98fr] lg:items-center">
+        <div className="relative mx-auto grid max-w-7xl gap-10 lg:grid-cols-[1.25fr_0.75fr] lg:items-center">
           <div>
-            <p className="text-sm font-semibold uppercase text-cyan-300">
-              Hardware Electronics Engineer
-            </p>
-            <h1 className="mt-4 max-w-4xl text-4xl font-bold leading-tight text-white sm:text-5xl lg:text-6xl">
-              PCB, embedded control and validation systems for automotive and
-              robotics applications.
+            <h1 className="text-5xl font-bold leading-none text-white sm:text-7xl lg:text-8xl">
+              LUCAS FRERY
             </h1>
-            <p className="mt-6 max-w-2xl text-lg leading-8 text-slate-300">
+            <p className="mt-5 text-2xl font-bold uppercase text-white sm:text-3xl">
+              HARDWARE ELECTRONICS ENGINEER
+            </p>
+            <p className="mt-3 text-lg font-semibold uppercase text-cyan-300 sm:text-xl">
+              PCB | EMBEDDED SYSTEM | VALIDATION
+            </p>
+            <p className="mt-8 max-w-3xl text-lg leading-8 text-slate-300">
               I design hardware from requirements to validation: mixed-signal
               I/O, power drivers, protection circuitry, communication
               interfaces, embedded control and system-level debugging.
@@ -134,7 +136,7 @@ export default function Home() {
               height={1222}
               preload
               className="aspect-square w-full object-cover"
-              sizes="(max-width: 1024px) 100vw, 48vw"
+              sizes="(max-width: 1024px) 100vw, 36vw"
             />
             <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-[#05070a]/70 via-transparent to-cyan-950/10" />
             <div className="pointer-events-none absolute inset-0 border border-white/5" />
