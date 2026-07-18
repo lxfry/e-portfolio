@@ -217,15 +217,15 @@ function ProjectApproach({
   tools: string[];
 }) {
   return (
-    <section className="relative z-10 px-5 py-14">
-      <div className="mx-auto max-w-6xl space-y-8">
+    <section className="relative z-10 border-t border-white/10">
+      <div>
         <ApproachBlock number="01" title="Problem">
           <Paragraphs items={approach.problem.paragraphs} />
           <Subheading>Core requirements</Subheading>
           <Bullets items={approach.problem.requirements} />
         </ApproachBlock>
 
-        <ApproachBlock number="02" title="Solution">
+        <ApproachBlock number="02" title="Solution" transparent>
           <Paragraphs items={approach.solution.paragraphs} />
           <Subheading>Platform capabilities</Subheading>
           <Bullets items={approach.solution.features} />
@@ -244,6 +244,44 @@ function ProjectApproach({
                 <div className="mt-3">
                   <Paragraphs items={step.paragraphs} />
                 </div>
+                {step.images ? (
+                  <div
+                    className={`mx-auto mt-6 grid items-center gap-4 ${
+                      step.images.length === 3
+                        ? "max-w-5xl items-start sm:grid-cols-[minmax(0,0.4fr)_minmax(0,1fr)]"
+                        : step.images.length > 1
+                        ? "max-w-5xl sm:grid-cols-2"
+                        : "max-w-5xl sm:max-w-[50%]"
+                    }`}
+                  >
+                    {step.images.map((image, imageIndex) => (
+                      <div
+                        key={image.src}
+                        className={`overflow-hidden rounded-lg border border-white/10 bg-white ${
+                          step.images.length === 3 && imageIndex === 0
+                            ? "sm:row-span-2"
+                            : step.images.length > 1 &&
+                                step.images.length !== 3
+                            ? "aspect-[4/3]"
+                            : ""
+                        }`}
+                      >
+                        <Image
+                          src={image.src}
+                          alt={image.alt}
+                          width={image.width}
+                          height={image.height}
+                          className={
+                            step.images.length > 1 &&
+                            step.images.length !== 3
+                              ? "h-full w-full object-contain"
+                              : "h-auto w-full"
+                          }
+                        />
+                      </div>
+                    ))}
+                  </div>
+                ) : null}
                 {step.details ? (
                   <div className="mt-4">
                     <Bullets items={step.details} />
@@ -254,7 +292,7 @@ function ProjectApproach({
           </div>
         </ApproachBlock>
 
-        <ApproachBlock number="04" title="Results">
+        <ApproachBlock number="04" title="Results" transparent>
           <Paragraphs items={approach.results.paragraphs} />
           <Subheading>Completed at this stage</Subheading>
           <Bullets items={approach.results.completed} />
@@ -281,9 +319,11 @@ function ProjectApproach({
           </div>
         </ApproachBlock>
 
-        <div className="grid gap-5 lg:grid-cols-2">
-          <InfoCard title="Technologies" items={technologies} />
-          <InfoCard title="Tools" items={tools} />
+        <div className="px-5 py-14">
+          <div className="mx-auto grid max-w-6xl gap-5 lg:grid-cols-2">
+            <InfoCard title="Technologies" items={technologies} />
+            <InfoCard title="Tools" items={tools} />
+          </div>
         </div>
       </div>
     </section>
@@ -294,18 +334,28 @@ function ApproachBlock({
   number,
   title,
   children,
+  transparent = false,
 }: {
   number: string;
   title: string;
   children: React.ReactNode;
+  transparent?: boolean;
 }) {
   return (
-    <section className="rounded-lg border border-white/10 bg-[linear-gradient(180deg,rgba(7,18,37,0.94)_0%,rgba(3,7,18,0.94)_100%)] p-6 shadow-[0_18px_45px_rgba(0,0,0,0.28)] sm:p-8">
-      <div className="mb-6 flex items-center gap-4 border-b border-white/10 pb-5">
-        <span className="text-sm font-semibold text-cyan-300">{number}</span>
-        <h2 className="text-3xl font-bold text-white">{title}</h2>
+    <section
+      className={`border-b border-white/10 px-5 py-14 ${
+        transparent
+          ? "bg-transparent"
+          : "bg-[linear-gradient(180deg,#071225_0%,#050b18_100%)] shadow-[inset_0_24px_60px_rgba(0,0,0,0.24)]"
+      }`}
+    >
+      <div className="mx-auto max-w-6xl">
+        <div className="mb-6 flex items-center gap-4 border-b border-white/10 pb-5">
+          <span className="text-sm font-semibold text-cyan-300">{number}</span>
+          <h2 className="text-3xl font-bold text-white">{title}</h2>
+        </div>
+        <div className="leading-8 text-slate-300">{children}</div>
       </div>
-      <div className="leading-8 text-slate-300">{children}</div>
     </section>
   );
 }

@@ -30,6 +30,12 @@ export type Project = {
       title: string;
       paragraphs: string[];
       details?: string[];
+      images?: {
+        src: string;
+        alt: string;
+        width: number;
+        height: number;
+      }[];
     }[];
     results: {
       paragraphs: string[];
@@ -57,41 +63,54 @@ export const projects: Project[] = [
     approach: {
       problem: {
         paragraphs: [
-          "The company needs a faster and more automated way to validate embedded software on its ECUs. Several employees may need to test ECU software at the same time, and sharing one validation system creates waiting time and limits parallel development. The long-term objective is therefore to provide one validation platform per employee.",
-          "Commercial Hardware-in-the-Loop systems provide the required functionality, but purchasing several systems is not financially realistic. In addition to the hardware cost, these systems generally require dedicated software licences. The company therefore needs an internal platform that covers its three main ECUs without requiring a hardware modification when switching between test configurations.",
+          "The company needed a faster and more automated way to validate embedded software on its VCUs. Several employees may need to test VCU software at the same time, and sharing one validation system creates waiting time and limits parallel development. The long-term objective is therefore to provide one validation platform per employee.",
+          "Commercial Hardware-in-the-Loop systems provide the required functionality, but purchasing several systems is not financially realistic. In addition to the hardware cost, these systems generally require dedicated software licences. The company therefore needed an internal platform that covers its three main VCUs without requiring a hardware modification when switching between test configurations.",
         ],
         requirements: [
           "Cost-effective enough to deploy at multiple employee workstations.",
           "Compact, easy to transport by hand, and simple to install and operate.",
           "Suitable for fast and automated embedded-software validation.",
-          "Compatible with the electrical and communication requirements of the company's three main ECUs.",
+          "Compatible with the electrical and communication requirements of the company's three main VCUs.",
           "Configurable through CAN, LIN, Ethernet, or USART without manual hardware changes.",
-          "Powered from the mains without requiring an external laboratory supply.",
+          "Powered from the grid without requiring an external laboratory supply.",
           "Extendable so additional functions and interfaces can be added later.",
         ],
       },
       solution: {
         paragraphs: [
-          "The proposed solution is a compact HiL platform designed for individual use at an engineer's workstation. It can be transported by hand, installed directly on a desk, and configured by software for any of the company's three main ECUs.",
-          "The system uses two STM32F407ZGT7 microcontrollers to provide the required number of I/O pins, timers, ADC channels, and communication peripherals. The two controllers exchange data through a high-speed SPI connection specified at up to 42 Mbit/s.",
-          "The objective is to deploy identical units across the engineering team so employees can develop and validate ECU software in parallel without the cost and licensing constraints of multiple commercial HiL systems.",
+          "I proposed a compact Hardware-in-the-Loop platform designed for individual use at an engineer's workstation. It can be transported by hand, installed directly on a desk, and fully configured through software.",
+          "The system is designed to cover all the I/O and functions of the company's three VCUs, with additional capacity for external devices such as sensors and other ECUs.",
+          "The objective is to deploy identical units across the engineering team so employees can develop and validate VCU software in parallel without the delays, cost, and licensing constraints associated with multiple commercial HiL systems.",
         ],
         features: [
-          "74 analog I/O channels and 108 digital I/O channels.",
-          "PWM generation and measurement on 36 channels at up to 2 kHz.",
-          "Two CAN and two LIN interfaces.",
-          "Ethernet, SPI, USART, and I²C connectivity.",
-          "24 V-compatible signal conditioning and protected analog and digital interfaces.",
-          "Software-configurable signal generation and measurement.",
-          "An architecture that can be extended with additional functions and interface boards.",
+          "Enough analog and digital I/O channels to fully cover the company's three VCUs.",
+          "PWM signal generation and measurement.",
+          "CAN, CAN FD, LIN, Ethernet, SPI, USART, and I²C interfaces.",
+          "Compatible with both 12 V and 24 V systems.",
+          "Software-configurable pull-up and pull-down selection, signal generation, and measurement.",
+          "An extensible architecture that supports additional functions and interface boards.",
         ],
       },
       method: [
         {
           title: "Step 1 — Requirements definition",
           paragraphs: [
-            "I collected and structured the validation requirements for the three target ECUs. This included the signal types, channel counts, voltage and current levels, PWM capabilities, communication interfaces, protection functions, power supply, physical constraints, and future extension needs.",
-            "I then created a high-level system diagram covering the power supply, processing units, communication interfaces, analog channels, digital channels, output drivers, and external connections. This provided an overview of the complete system and allowed me to evaluate feasibility before starting the detailed design.",
+            "I collected and structured the validation requirements for the company's three target VCUs. This included signal types, channel counts, voltage and current levels, PWM capabilities, communication interfaces, power supply requirements, physical constraints, and future extension needs.",
+            "I then created a high-level system diagram in draw.io showing the processing architecture and all required driver blocks, with the requirements for each block documented directly in the diagram.",
+          ],
+          images: [
+            {
+              src: "/portfolio-pages/compact-hil-system-architecture.png",
+              alt: "High-level architecture diagram of the compact Hardware-in-the-Loop platform",
+              width: 1193,
+              height: 865,
+            },
+            {
+              src: "/portfolio-pages/compact-hil-physical-architecture.png",
+              alt: "Physical architecture diagram of the compact Hardware-in-the-Loop platform",
+              width: 820,
+              height: 715,
+            },
           ],
         },
         {
@@ -100,12 +119,40 @@ export const projects: Project[] = [
             "I selected the main components according to the I/O count, ADC and timer resources, PWM capabilities, communication peripherals, processing performance, electrical requirements, availability, PCB area, and cost.",
             "A dual-STM32F407ZGT7 architecture was selected because one microcontroller did not provide enough pins, timers, and peripheral resources for the complete system. I selected the principal interface drivers, fixed the first detailed architecture, and prepared a preliminary BOM estimate to verify the cost direction.",
           ],
+          images: [
+            {
+              src: "/portfolio-pages/compact-hil-component-selection.png",
+              alt: "Component selection and preliminary bill of materials for the compact Hardware-in-the-Loop platform",
+              width: 1483,
+              height: 732,
+            },
+          ],
         },
         {
           title: "Step 3 — Schematic design",
           paragraphs: [
             "I created the first complete schematic in Altium Designer using the selected microcontrollers, interface drivers, and communication components. Placeholder passive components were initially used around the main drivers so the circuit architecture could be defined before every value and reference was fixed.",
             "I used hierarchical sheets, repeated functional blocks, multi-channel structures, harnesses, buses, reusable circuits, and centralized component-parameter management. I then sized and selected the remaining filters, protection devices, resistors, capacitors, connectors, and supporting components for the complete project.",
+          ],
+          images: [
+            {
+              src: "/portfolio-pages/compact-hil-schematic-hierarchy.png",
+              alt: "Hierarchical schematic document structure in Altium Designer",
+              width: 315,
+              height: 678,
+            },
+            {
+              src: "/portfolio-pages/compact-hil-top-level-schematic.png",
+              alt: "Top-level compact Hardware-in-the-Loop schematic in Altium Designer",
+              width: 1198,
+              height: 797,
+            },
+            {
+              src: "/portfolio-pages/compact-hil-repeated-analog-output.png",
+              alt: "Repeated analog-output schematic block in Altium Designer",
+              width: 1047,
+              height: 170,
+            },
           ],
         },
         {
