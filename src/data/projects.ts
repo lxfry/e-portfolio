@@ -17,6 +17,29 @@ export type Project = {
   technologies: string[];
   tools: string[];
   nextSteps?: string[];
+  approach?: {
+    problem: {
+      paragraphs: string[];
+      requirements: string[];
+    };
+    solution: {
+      paragraphs: string[];
+      features: string[];
+    };
+    method: {
+      title: string;
+      paragraphs: string[];
+      details?: string[];
+    }[];
+    results: {
+      paragraphs: string[];
+      completed: string[];
+    };
+    nextSteps: {
+      title: string;
+      actions: string[];
+    }[];
+  };
 };
 
 export const projects: Project[] = [
@@ -31,6 +54,142 @@ export const projects: Project[] = [
     image: "/portfolio-pages/simulation-control-unit.png",
     summary:
       "End-to-end development of a compact Simulation Control Unit used as an internal, cost-effective HiL platform for automotive ECU validation.",
+    approach: {
+      problem: {
+        paragraphs: [
+          "The company needs a faster and more automated way to validate embedded software on its ECUs. Several employees may need to test ECU software at the same time, and sharing one validation system creates waiting time and limits parallel development. The long-term objective is therefore to provide one validation platform per employee.",
+          "Commercial Hardware-in-the-Loop systems provide the required functionality, but purchasing several systems is not financially realistic. In addition to the hardware cost, these systems generally require dedicated software licences. The company therefore needs an internal platform that covers its three main ECUs without requiring a hardware modification when switching between test configurations.",
+        ],
+        requirements: [
+          "Cost-effective enough to deploy at multiple employee workstations.",
+          "Compact, easy to transport by hand, and simple to install and operate.",
+          "Suitable for fast and automated embedded-software validation.",
+          "Compatible with the electrical and communication requirements of the company's three main ECUs.",
+          "Configurable through CAN, LIN, Ethernet, or USART without manual hardware changes.",
+          "Powered from the mains without requiring an external laboratory supply.",
+          "Extendable so additional functions and interfaces can be added later.",
+        ],
+      },
+      solution: {
+        paragraphs: [
+          "The proposed solution is a compact HiL platform designed for individual use at an engineer's workstation. It can be transported by hand, installed directly on a desk, and configured by software for any of the company's three main ECUs.",
+          "The system uses two STM32F407ZGT7 microcontrollers to provide the required number of I/O pins, timers, ADC channels, and communication peripherals. The two controllers exchange data through a high-speed SPI connection specified at up to 42 Mbit/s.",
+          "The objective is to deploy identical units across the engineering team so employees can develop and validate ECU software in parallel without the cost and licensing constraints of multiple commercial HiL systems.",
+        ],
+        features: [
+          "74 analog I/O channels and 108 digital I/O channels.",
+          "PWM generation and measurement on 36 channels at up to 2 kHz.",
+          "Two CAN and two LIN interfaces.",
+          "Ethernet, SPI, USART, and I²C connectivity.",
+          "24 V-compatible signal conditioning and protected analog and digital interfaces.",
+          "Software-configurable signal generation and measurement.",
+          "An architecture that can be extended with additional functions and interface boards.",
+        ],
+      },
+      method: [
+        {
+          title: "Step 1 — Requirements definition",
+          paragraphs: [
+            "I collected and structured the validation requirements for the three target ECUs. This included the signal types, channel counts, voltage and current levels, PWM capabilities, communication interfaces, protection functions, power supply, physical constraints, and future extension needs.",
+            "I then created a high-level system diagram covering the power supply, processing units, communication interfaces, analog channels, digital channels, output drivers, and external connections. This provided an overview of the complete system and allowed me to evaluate feasibility before starting the detailed design.",
+          ],
+        },
+        {
+          title: "Step 2 — Driver and microcontroller selection",
+          paragraphs: [
+            "I selected the main components according to the I/O count, ADC and timer resources, PWM capabilities, communication peripherals, processing performance, electrical requirements, availability, PCB area, and cost.",
+            "A dual-STM32F407ZGT7 architecture was selected because one microcontroller did not provide enough pins, timers, and peripheral resources for the complete system. I selected the principal interface drivers, fixed the first detailed architecture, and prepared a preliminary BOM estimate to verify the cost direction.",
+          ],
+        },
+        {
+          title: "Step 3 — Schematic design",
+          paragraphs: [
+            "I created the first complete schematic in Altium Designer using the selected microcontrollers, interface drivers, and communication components. Placeholder passive components were initially used around the main drivers so the circuit architecture could be defined before every value and reference was fixed.",
+            "I used hierarchical sheets, repeated functional blocks, multi-channel structures, harnesses, buses, reusable circuits, and centralized component-parameter management. I then sized and selected the remaining filters, protection devices, resistors, capacitors, connectors, and supporting components for the complete project.",
+          ],
+        },
+        {
+          title: "Step 4 — BOM development and cost control",
+          paragraphs: [
+            "I developed the BOM in parallel with the schematic using Altium ActiveBOM. Each schematic update was reflected in the cost and sourcing view, allowing me to monitor supplier references, component availability, alternatives, missing parameters, and the estimated total hardware cost.",
+            "This continuous process reduces the risk of discovering expensive or unavailable components after the schematic is complete. The BOM remains preliminary and will be finalized after the ongoing circuit validation.",
+          ],
+        },
+        {
+          title: "Step 5 — Prototyping and experimental validation",
+          paragraphs: [
+            "The project is currently in the prototyping phase. I am using an STM32F407G-DISC1 evaluation board to verify the proposed pin allocation, timer resources, PWM generation and measurement, timing precision, GPIO speed, peripheral behavior, and resource distribution between both microcontrollers.",
+            "I am also testing representative circuit sections with an oscilloscope and frequency generator to confirm the behavior of the selected drivers, signal-conditioning stages, and protection circuits. The purpose is to identify limitations before PCB layout and manufacturing, while corrections can still be made at schematic level.",
+          ],
+        },
+      ],
+      results: {
+        paragraphs: [
+          "The project has progressed from requirements definition to a complete first schematic-level architecture. The final PCB has not yet been manufactured; current tests are being used to confirm the critical design assumptions before the schematic is frozen.",
+        ],
+        completed: [
+          "Requirements collected for the company's three main ECUs.",
+          "High-level system architecture and dual-STM32F407ZGT7 processing architecture defined.",
+          "Architecture established for 74 analog I/O, 108 digital I/O, and 36 PWM channels up to 2 kHz.",
+          "Two CAN, two LIN, Ethernet, SPI, USART, and I²C interfaces included.",
+          "24 V-compatible interface, signal-conditioning, and protection circuits designed.",
+          "Hierarchical schematic architecture created in Altium Designer.",
+          "Main components selected and a preliminary BOM and cost estimate prepared.",
+          "MCU pin and peripheral allocation prepared in STM32CubeMX.",
+          "Experimental validation started with an STM32 evaluation board and representative circuit sections.",
+        ],
+      },
+      nextSteps: [
+        {
+          title: "1. Complete MCU resource validation",
+          actions: [
+            "Finalize the pin and timer allocation for both microcontrollers.",
+            "Validate PWM generation and measurement under representative operating conditions.",
+            "Verify inter-MCU communication speed, stability, and synchronization.",
+          ],
+        },
+        {
+          title: "2. Complete circuit-level prototyping",
+          actions: [
+            "Test representative analog, digital, driver, and communication channels.",
+            "Verify 24 V compatibility, filtering, voltage scaling, and protection behavior.",
+            "Correct any limitations identified during testing.",
+          ],
+        },
+        {
+          title: "3. Finalize the schematic and BOM",
+          actions: [
+            "Integrate the prototype results and complete the remaining component selections.",
+            "Review all repeated blocks, component ratings, tolerances, availability, and alternatives.",
+            "Freeze the schematic and confirm that the cost supports the one-HiL-per-employee objective.",
+          ],
+        },
+        {
+          title: "4. Design, manufacture, and bring up the PCB",
+          actions: [
+            "Complete placement and routing with attention to signal integrity, EMC, grounding, and thermal constraints.",
+            "Manufacture and assemble the first prototype.",
+            "Validate the power rails, both microcontrollers, inter-MCU communication, and each I/O section progressively.",
+          ],
+        },
+        {
+          title: "5. Develop the control and validation software",
+          actions: [
+            "Implement control of the analog, digital, PWM, and communication functions.",
+            "Create software configurations for the three target ECUs, including diagnostics and error reporting.",
+            "Provide a simple setup workflow and an interface for automated validation sequences.",
+          ],
+        },
+        {
+          title: "6. Validate the complete system",
+          actions: [
+            "Test all three ECUs without changing the HiL hardware.",
+            "Run normal-operation and controlled fault scenarios.",
+            "Measure timing, accuracy, reliability, and repeatability against the original requirements.",
+          ],
+        },
+      ],
+    },
     homepageProof: [
       "Dual STM32F407ZGT7 architecture",
       "74 analog and 108 digital I/O channels",

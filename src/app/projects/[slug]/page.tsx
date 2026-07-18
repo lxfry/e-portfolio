@@ -2,7 +2,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
-import { getProject, projects } from "@/data/projects";
+import { getProject, projects, type Project } from "@/data/projects";
 
 type ProjectPageProps = {
   params: Promise<{ slug: string }>;
@@ -40,9 +40,33 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
     notFound();
   }
 
+  const isHilProject = project.slug === "simulation-control-unit";
+
   return (
-    <main className="min-h-screen bg-[#05070a] text-slate-100">
-      <header className="border-b border-white/10 bg-[#05070a]/95">
+    <main className="relative min-h-screen overflow-hidden bg-[#05070a] text-slate-100">
+      {isHilProject ? (
+        <>
+          <Image
+            src="/hero-pcb-background.jpeg"
+            alt=""
+            width={1920}
+            height={1080}
+            aria-hidden="true"
+            className="pointer-events-none fixed inset-0 z-0 h-screen w-screen object-cover opacity-80"
+            sizes="100vw"
+          />
+          <div className="pointer-events-none fixed inset-0 z-0 bg-[#05070a]/35" />
+          <div className="pointer-events-none fixed inset-0 z-0 bg-gradient-to-r from-[#05070a]/90 via-[#05070a]/55 to-[#05070a]/20" />
+        </>
+      ) : null}
+
+      <header
+        className={`relative z-30 border-b border-white/10 ${
+          isHilProject
+            ? "bg-[linear-gradient(180deg,#071225_0%,#050b18_100%)] shadow-[inset_0_-18px_35px_rgba(0,0,0,0.18)] backdrop-blur"
+            : "bg-[#05070a]/95"
+        }`}
+      >
         <nav className="mx-auto flex max-w-6xl items-center justify-between px-5 py-4">
           <Link href="/" className="text-sm font-semibold text-cyan-200">
             Lucas Frery
@@ -56,8 +80,10 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
         </nav>
       </header>
 
-      <section className="relative border-b border-white/10 px-5 py-14 sm:py-18">
-        <div className="absolute inset-0 opacity-20 circuit-grid" />
+      <section className="relative z-10 border-b border-white/10 px-5 py-14 sm:py-18">
+        {!isHilProject ? (
+          <div className="absolute inset-0 opacity-20 circuit-grid" />
+        ) : null}
         <div className="relative mx-auto grid max-w-6xl gap-10 lg:grid-cols-[1fr_0.9fr] lg:items-center">
           <div>
             <p className="text-sm font-semibold uppercase text-cyan-300">
@@ -89,44 +115,52 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
         </div>
       </section>
 
-      <section className="px-5 py-14">
-        <div className="mx-auto grid max-w-6xl gap-8 lg:grid-cols-[0.75fr_1.25fr]">
-          <aside className="space-y-5">
-            <InfoCard title="Technologies" items={project.technologies} />
-            <InfoCard title="Tools" items={project.tools} />
-          </aside>
+      {project.approach ? (
+        <ProjectApproach
+          approach={project.approach}
+          technologies={project.technologies}
+          tools={project.tools}
+        />
+      ) : (
+        <section className="relative z-10 px-5 py-14">
+          <div className="mx-auto grid max-w-6xl gap-8 lg:grid-cols-[0.75fr_1.25fr]">
+            <aside className="space-y-5">
+              <InfoCard title="Technologies" items={project.technologies} />
+              <InfoCard title="Tools" items={project.tools} />
+            </aside>
 
-          <article className="space-y-8">
-            <ProjectSection title="Context">
-              <p>{project.context}</p>
-            </ProjectSection>
-
-            <ProjectSection title="My Role">
-              <p>{project.roleDescription}</p>
-            </ProjectSection>
-
-            <ProjectSection title="Implementation">
-              <Bullets items={project.implementation} />
-            </ProjectSection>
-
-            <ProjectSection title="Proof and Scale">
-              <Bullets items={project.proof} />
-            </ProjectSection>
-
-            <ProjectSection title="Results">
-              <Bullets items={project.results} />
-            </ProjectSection>
-
-            {project.nextSteps ? (
-              <ProjectSection title="Current Next Steps">
-                <Bullets items={project.nextSteps} />
+            <article className="space-y-8">
+              <ProjectSection title="Context">
+                <p>{project.context}</p>
               </ProjectSection>
-            ) : null}
-          </article>
-        </div>
-      </section>
 
-      <section className="border-t border-white/10 px-5 py-14">
+              <ProjectSection title="My Role">
+                <p>{project.roleDescription}</p>
+              </ProjectSection>
+
+              <ProjectSection title="Implementation">
+                <Bullets items={project.implementation} />
+              </ProjectSection>
+
+              <ProjectSection title="Proof and Scale">
+                <Bullets items={project.proof} />
+              </ProjectSection>
+
+              <ProjectSection title="Results">
+                <Bullets items={project.results} />
+              </ProjectSection>
+
+              {project.nextSteps ? (
+                <ProjectSection title="Current Next Steps">
+                  <Bullets items={project.nextSteps} />
+                </ProjectSection>
+              ) : null}
+            </article>
+          </div>
+        </section>
+      )}
+
+      <section className="relative z-10 border-t border-white/10 px-5 py-14">
         <div className="mx-auto max-w-6xl">
           <p className="text-sm font-semibold uppercase text-cyan-300">
             Original portfolio page
@@ -143,6 +177,23 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
           </div>
         </div>
       </section>
+
+      {isHilProject ? (
+        <footer className="relative z-10 border-t border-white/10 bg-[linear-gradient(180deg,#071225_0%,#050b18_100%)] px-5 py-6 shadow-[inset_0_18px_35px_rgba(0,0,0,0.18)]">
+          <div className="mx-auto grid max-w-7xl gap-3 text-sm text-slate-300 sm:grid-cols-3 sm:items-center">
+            <p className="sm:justify-self-start">
+              &copy; 2026 Lucas Frery. All rights reserved.
+            </p>
+            <Link
+              href="/privacy-policy"
+              className="font-semibold text-cyan-300 transition hover:text-cyan-200 sm:justify-self-center"
+            >
+              Privacy Policy
+            </Link>
+            <span aria-hidden="true" className="hidden sm:block" />
+          </div>
+        </footer>
+      ) : null}
     </main>
   );
 }
@@ -153,6 +204,125 @@ function Fact({ label, value }: { label: string; value: string }) {
       <p className="text-xs font-semibold uppercase text-cyan-300">{label}</p>
       <p className="mt-2 text-slate-100">{value}</p>
     </div>
+  );
+}
+
+function ProjectApproach({
+  approach,
+  technologies,
+  tools,
+}: {
+  approach: NonNullable<Project["approach"]>;
+  technologies: string[];
+  tools: string[];
+}) {
+  return (
+    <section className="relative z-10 px-5 py-14">
+      <div className="mx-auto max-w-6xl space-y-8">
+        <ApproachBlock number="01" title="Problem">
+          <Paragraphs items={approach.problem.paragraphs} />
+          <Subheading>Core requirements</Subheading>
+          <Bullets items={approach.problem.requirements} />
+        </ApproachBlock>
+
+        <ApproachBlock number="02" title="Solution">
+          <Paragraphs items={approach.solution.paragraphs} />
+          <Subheading>Platform capabilities</Subheading>
+          <Bullets items={approach.solution.features} />
+        </ApproachBlock>
+
+        <ApproachBlock number="03" title="Method">
+          <div className="space-y-5">
+            {approach.method.map((step) => (
+              <div
+                key={step.title}
+                className="rounded-lg border border-white/10 bg-slate-950/70 p-5"
+              >
+                <h3 className="text-lg font-semibold text-cyan-200">
+                  {step.title}
+                </h3>
+                <div className="mt-3">
+                  <Paragraphs items={step.paragraphs} />
+                </div>
+                {step.details ? (
+                  <div className="mt-4">
+                    <Bullets items={step.details} />
+                  </div>
+                ) : null}
+              </div>
+            ))}
+          </div>
+        </ApproachBlock>
+
+        <ApproachBlock number="04" title="Results">
+          <Paragraphs items={approach.results.paragraphs} />
+          <Subheading>Completed at this stage</Subheading>
+          <Bullets items={approach.results.completed} />
+        </ApproachBlock>
+
+        <ApproachBlock number="05" title="Next Steps">
+          <p>
+            The remaining work is organized around proving the critical design
+            assumptions first, then completing the hardware and validating it
+            against the three target ECUs.
+          </p>
+          <div className="mt-6 grid gap-4 md:grid-cols-2">
+            {approach.nextSteps.map((step) => (
+              <div
+                key={step.title}
+                className="rounded-lg border border-white/10 bg-slate-950/70 p-5"
+              >
+                <h3 className="font-semibold text-cyan-200">{step.title}</h3>
+                <div className="mt-3">
+                  <Bullets items={step.actions} />
+                </div>
+              </div>
+            ))}
+          </div>
+        </ApproachBlock>
+
+        <div className="grid gap-5 lg:grid-cols-2">
+          <InfoCard title="Technologies" items={technologies} />
+          <InfoCard title="Tools" items={tools} />
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function ApproachBlock({
+  number,
+  title,
+  children,
+}: {
+  number: string;
+  title: string;
+  children: React.ReactNode;
+}) {
+  return (
+    <section className="rounded-lg border border-white/10 bg-[linear-gradient(180deg,rgba(7,18,37,0.94)_0%,rgba(3,7,18,0.94)_100%)] p-6 shadow-[0_18px_45px_rgba(0,0,0,0.28)] sm:p-8">
+      <div className="mb-6 flex items-center gap-4 border-b border-white/10 pb-5">
+        <span className="text-sm font-semibold text-cyan-300">{number}</span>
+        <h2 className="text-3xl font-bold text-white">{title}</h2>
+      </div>
+      <div className="leading-8 text-slate-300">{children}</div>
+    </section>
+  );
+}
+
+function Paragraphs({ items }: { items: string[] }) {
+  return (
+    <div className="space-y-4">
+      {items.map((item) => (
+        <p key={item}>{item}</p>
+      ))}
+    </div>
+  );
+}
+
+function Subheading({ children }: { children: React.ReactNode }) {
+  return (
+    <h3 className="mb-3 mt-6 text-lg font-semibold text-white">{children}</h3>
   );
 }
 
