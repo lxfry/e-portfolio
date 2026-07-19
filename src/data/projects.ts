@@ -7,6 +7,10 @@ export type Project = {
   role: string;
   category: string;
   image: string;
+  homepageImages?: {
+    src: string;
+    alt: string;
+  }[];
   summary: string;
   homepageProof: string[];
   context: string;
@@ -35,6 +39,8 @@ export type Project = {
         alt: string;
         width: number;
         height: number;
+        displayWidth?: "default" | "wide";
+        fit?: "contain" | "cover" | "equal-height";
       }[];
     }[];
     results: {
@@ -53,13 +59,27 @@ export const projects: Project[] = [
     slug: "simulation-control-unit",
     title: "Development of a Compact Hardware-in-the-Loop Platform",
     shortTitle: "Compact HiL / Simulation Control Unit",
-    company: "Renco GmbH",
+    company: "Renco GmbH — Germany",
     period: "March 2026 - Present",
     role: "Electronics Hardware Engineer",
-    category: "Automotive ECU validation",
-    image: "/portfolio-pages/simulation-control-unit.png",
+    category: "Automotive VCU validation",
+    image: "/portfolio-pages/compact-hil-project-hero.png",
+    homepageImages: [
+      {
+        src: "/portfolio-pages/compact-hil-oscilloscope-testing.jpeg",
+        alt: "STM32 prototype undergoing oscilloscope validation",
+      },
+      {
+        src: "/portfolio-pages/compact-hil-system-architecture.png",
+        alt: "Compact HiL system architecture",
+      },
+      {
+        src: "/portfolio-pages/compact-hil-top-level-schematic.png",
+        alt: "Compact HiL top-level schematic",
+      },
+    ],
     summary:
-      "End-to-end development of a compact Simulation Control Unit used as an internal, cost-effective HiL platform for automotive ECU validation.",
+      "End-to-end development of a compact, cost-effective HiL platform enabling engineers to validate VCU software in parallel from their own workstations.",
     approach: {
       problem: {
         paragraphs: [
@@ -116,7 +136,7 @@ export const projects: Project[] = [
         {
           title: "Step 2 — Driver and microcontroller selection",
           paragraphs: [
-            "I selected the main components according to the I/O count, ADC and timer resources, PWM capabilities, communication peripherals, processing performance, electrical requirements, availability, PCB area, and cost.",
+            "I selected the main components based on the required digital and analog signal channels and their performance requirements, as well as the necessary PWM, timer and communication interfaces, processing performance, electrical specifications, availability, and cost.",
             "A dual-STM32F407ZGT7 architecture was selected because one microcontroller did not provide enough pins, timers, and peripheral resources for the complete system. I selected the principal interface drivers, fixed the first detailed architecture, and prepared a preliminary BOM estimate to verify the cost direction.",
           ],
           images: [
@@ -158,15 +178,40 @@ export const projects: Project[] = [
         {
           title: "Step 4 — BOM development and cost control",
           paragraphs: [
-            "I developed the BOM in parallel with the schematic using Altium ActiveBOM. Each schematic update was reflected in the cost and sourcing view, allowing me to monitor supplier references, component availability, alternatives, missing parameters, and the estimated total hardware cost.",
+            "I developed the BOM in parallel with the schematic using Altium ActiveBOM. Each schematic update was reflected in the cost and sourcing view, allowing me to monitor supplier references, component availability, alternatives, missing parameters, individual component prices, and the resulting total hardware cost.",
             "This continuous process reduces the risk of discovering expensive or unavailable components after the schematic is complete. The BOM remains preliminary and will be finalized after the ongoing circuit validation.",
+          ],
+          images: [
+            {
+              src: "/portfolio-pages/compact-hil-activebom.png",
+              alt: "Altium ActiveBOM cost and component sourcing view for the compact Hardware-in-the-Loop platform",
+              width: 1581,
+              height: 646,
+              displayWidth: "wide",
+            },
           ],
         },
         {
           title: "Step 5 — Prototyping and experimental validation",
           paragraphs: [
-            "The project is currently in the prototyping phase. I am using an STM32F407G-DISC1 evaluation board to verify the proposed pin allocation, timer resources, PWM generation and measurement, timing precision, GPIO speed, peripheral behavior, and resource distribution between both microcontrollers.",
-            "I am also testing representative circuit sections with an oscilloscope and frequency generator to confirm the behavior of the selected drivers, signal-conditioning stages, and protection circuits. The purpose is to identify limitations before PCB layout and manufacturing, while corrections can still be made at schematic level.",
+            "The project is currently in the prototyping phase. Using one STM32F407G-DISC1 evaluation board, I have tested the microcontroller’s digital and analog I/O, PWM generation and measurement, timer resources, timing precision, GPIO speed, and peripheral behavior.",
+            "Communication and resource coordination between the two microcontrollers have not yet been tested. Validation of the interface drivers, signal-conditioning stages, protection circuits, and other representative circuit sections will be performed in the next phase. The purpose is to identify limitations before PCB layout and manufacturing, while corrections can still be made at schematic level.",
+          ],
+          images: [
+            {
+              src: "/portfolio-pages/compact-hil-oscilloscope-testing.jpeg",
+              alt: "STM32F407G-DISC1 prototype undergoing signal measurements with an oscilloscope",
+              width: 1536,
+              height: 2048,
+              fit: "equal-height",
+            },
+            {
+              src: "/portfolio-pages/compact-hil-simulink-testing.jpeg",
+              alt: "STM32 prototype connected to a Simulink test setup during experimental validation",
+              width: 2048,
+              height: 1536,
+              fit: "equal-height",
+            },
           ],
         },
       ],

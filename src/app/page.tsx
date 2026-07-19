@@ -239,13 +239,38 @@ export default function Home() {
                 className="group overflow-hidden rounded-lg border border-white/10 bg-[linear-gradient(180deg,#071225_0%,#030712_100%)] shadow-[0_18px_45px_rgba(0,0,0,0.28)] transition duration-300 hover:-translate-y-1 hover:border-cyan-300/60 hover:shadow-[0_22px_55px_rgba(0,0,0,0.38)]"
               >
                 <div className="relative aspect-video overflow-hidden border-b border-white/10">
-                  <Image
-                    src={project.image}
-                    alt={`${project.shortTitle} thumbnail`}
-                    fill
-                    className="object-cover transition duration-500 group-hover:scale-105"
-                    sizes="(max-width: 1024px) 100vw, 50vw"
-                  />
+                  {project.homepageImages ? (
+                    <div className="grid h-full grid-cols-[0.9fr_1.4fr] grid-rows-[0.75fr_1.25fr] gap-1 bg-slate-950">
+                      {project.homepageImages.map((image, imageIndex) => (
+                        <div
+                          key={image.src}
+                          className={`relative overflow-hidden ${
+                            imageIndex === 0
+                              ? "row-span-2 bg-slate-950"
+                              : "bg-white"
+                          }`}
+                        >
+                          <Image
+                            src={image.src}
+                            alt={image.alt}
+                            fill
+                            className={`transition duration-500 group-hover:scale-105 ${
+                              imageIndex < 2 ? "object-cover" : "object-contain"
+                            }`}
+                            sizes="(max-width: 1024px) 50vw, 25vw"
+                          />
+                        </div>
+                      ))}
+                    </div>
+                  ) : (
+                    <Image
+                      src={project.image}
+                      alt={`${project.shortTitle} thumbnail`}
+                      fill
+                      className="object-cover transition duration-500 group-hover:scale-105"
+                      sizes="(max-width: 1024px) 100vw, 50vw"
+                    />
+                  )}
                 </div>
                 <div className="p-5">
                   <p className="text-sm font-semibold text-cyan-300">

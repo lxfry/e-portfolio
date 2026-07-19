@@ -84,7 +84,13 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
         {!isHilProject ? (
           <div className="absolute inset-0 opacity-20 circuit-grid" />
         ) : null}
-        <div className="relative mx-auto grid max-w-6xl gap-10 lg:grid-cols-[1fr_0.9fr] lg:items-center">
+        <div
+          className={`relative mx-auto max-w-6xl ${
+            isHilProject
+              ? ""
+              : "grid gap-10 lg:grid-cols-[1fr_0.9fr] lg:items-center"
+          }`}
+        >
           <div>
             <p className="text-sm font-semibold uppercase text-cyan-300">
               {project.category}
@@ -102,16 +108,18 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
             </div>
           </div>
 
-          <div className="overflow-hidden rounded-lg border border-cyan-300/20 bg-white/[0.03] shadow-2xl shadow-cyan-950/30">
-            <Image
-              src={project.image}
-              alt={`${project.shortTitle} portfolio page`}
-              width={2880}
-              height={1620}
-              className="h-auto w-full"
-              sizes="(max-width: 1024px) 100vw, 45vw"
-            />
-          </div>
+          {!isHilProject ? (
+            <div className="overflow-hidden rounded-lg border border-cyan-300/20 bg-white/[0.03] shadow-2xl shadow-cyan-950/30">
+              <Image
+                src={project.image}
+                alt={`${project.shortTitle} portfolio page`}
+                width={2880}
+                height={1620}
+                className="h-auto w-full"
+                sizes="(max-width: 1024px) 100vw, 45vw"
+              />
+            </div>
+          ) : null}
         </div>
       </section>
 
@@ -160,23 +168,25 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
         </section>
       )}
 
-      <section className="relative z-10 border-t border-white/10 px-5 py-14">
-        <div className="mx-auto max-w-6xl">
-          <p className="text-sm font-semibold uppercase text-cyan-300">
-            Original portfolio page
-          </p>
-          <div className="mt-5 overflow-hidden rounded-lg border border-white/10 bg-white/[0.03]">
-            <Image
-              src={project.image}
-              alt={`${project.shortTitle} original portfolio layout`}
-              width={2880}
-              height={1620}
-              className="h-auto w-full"
-              sizes="100vw"
-            />
+      {!isHilProject ? (
+        <section className="relative z-10 border-t border-white/10 px-5 py-14">
+          <div className="mx-auto max-w-6xl">
+            <p className="text-sm font-semibold uppercase text-cyan-300">
+              Original portfolio page
+            </p>
+            <div className="mt-5 overflow-hidden rounded-lg border border-white/10 bg-white/[0.03]">
+              <Image
+                src={project.image}
+                alt={`${project.shortTitle} original portfolio layout`}
+                width={2880}
+                height={1620}
+                className="h-auto w-full"
+                sizes="100vw"
+              />
+            </div>
           </div>
-        </div>
-      </section>
+        </section>
+      ) : null}
 
       {isHilProject ? (
         <footer className="relative z-10 border-t border-white/10 bg-[linear-gradient(180deg,#071225_0%,#050b18_100%)] px-5 py-6 shadow-[inset_0_18px_35px_rgba(0,0,0,0.18)]">
@@ -251,6 +261,8 @@ function ProjectApproach({
                         ? "max-w-5xl items-start sm:grid-cols-[minmax(0,0.4fr)_minmax(0,1fr)]"
                         : step.images.length > 1
                         ? "max-w-5xl sm:grid-cols-2"
+                        : step.images[0].displayWidth === "wide"
+                        ? "max-w-5xl sm:max-w-[75%]"
                         : "max-w-5xl sm:max-w-[50%]"
                     }`}
                   >
@@ -261,8 +273,11 @@ function ProjectApproach({
                           step.images.length === 3 && imageIndex === 0
                             ? "sm:row-span-2"
                             : step.images.length > 1 &&
-                                step.images.length !== 3
+                                step.images.length !== 3 &&
+                                image.fit !== "equal-height"
                             ? "aspect-[4/3]"
+                            : image.fit === "equal-height"
+                            ? "justify-self-center"
                             : ""
                         }`}
                       >
@@ -272,9 +287,15 @@ function ProjectApproach({
                           width={image.width}
                           height={image.height}
                           className={
-                            step.images.length > 1 &&
+                            image.fit === "equal-height"
+                              ? "h-auto w-full sm:h-80 sm:w-auto"
+                              : step.images.length > 1 &&
                             step.images.length !== 3
-                              ? "h-full w-full object-contain"
+                              ? `h-full w-full ${
+                                  image.fit === "cover"
+                                    ? "object-cover"
+                                    : "object-contain"
+                                }`
                               : "h-auto w-full"
                           }
                         />
