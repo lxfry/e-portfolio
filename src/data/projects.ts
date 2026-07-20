@@ -45,7 +45,10 @@ export type Project = {
     }[];
     results: {
       paragraphs: string[];
-      completed: string[];
+      completed: {
+        title: string;
+        items: string[];
+      }[];
     };
     nextSteps: {
       title: string;
@@ -220,72 +223,76 @@ export const projects: Project[] = [
           "The project has progressed from requirements definition to a complete first schematic-level architecture. The final PCB has not yet been manufactured; current tests are being used to confirm the critical design assumptions before the schematic is frozen.",
         ],
         completed: [
-          "Requirements collected for the company's three main ECUs.",
-          "High-level system architecture and dual-STM32F407ZGT7 processing architecture defined.",
-          "Architecture established for 74 analog I/O, 108 digital I/O, and 36 PWM channels up to 2 kHz.",
-          "Two CAN, two LIN, Ethernet, SPI, USART, and I²C interfaces included.",
-          "24 V-compatible interface, signal-conditioning, and protection circuits designed.",
-          "Hierarchical schematic architecture created in Altium Designer.",
-          "Main components selected and a preliminary BOM and cost estimate prepared.",
-          "MCU pin and peripheral allocation prepared in STM32CubeMX.",
-          "Experimental validation started with an STM32 evaluation board and representative circuit sections.",
+          {
+            title: "System definition and architecture",
+            items: [
+              "Requirements defined for the company's three main VCUs, including channel counts, electrical levels, communication interfaces, power, and physical constraints.",
+              "High-level system architecture and dual-STM32F407ZGT7 processing architecture established.",
+              "I/O architecture completed for 66 analog channels—33 inputs and 33 outputs—and 116 digital and power I/O channels—50 digital inputs, 25 high-side outputs, 25 low-side outputs, and 16 half-bridge outputs.",
+              "PWM capability allocated across 44 channels up to 2 kHz: 14 PWM inputs and 30 PWM outputs.",
+              "Two CAN/CAN FD interfaces with switchable termination, two LIN interfaces, Ethernet, SPI, USART, and I²C.",
+            ],
+          },
+          {
+            title: "Detailed hardware design",
+            items: [
+              "12 V and 24 V-compatible signal conditioning, configurable pull-up and pull-down functions, and protection circuits designed.",
+              "Complete hierarchical schematic created in Altium Designer using reusable and repeated functional blocks.",
+              "Nearly all components selected and sized, including all resistors and capacitors; the remaining revisions will be driven by circuit-validation results.",
+            ],
+          },
+          {
+            title: "Engineering readiness and validation",
+            items: [
+              "Preliminary BOM, sourcing review, and cost estimate prepared.",
+              "MCU pin, timer, and peripheral allocation prepared in STM32CubeMX.",
+              "Initial MCU-level validation completed for analog and digital I/O, PWM generation and measurement, timer resources, timing precision, GPIO speed, and peripheral behavior.",
+            ],
+          },
         ],
       },
       nextSteps: [
         {
-          title: "1. Complete MCU resource validation",
+          title: "1. Prototype and validate critical circuitry",
           actions: [
-            "Finalize the pin and timer allocation for both microcontrollers.",
-            "Validate PWM generation and measurement under representative operating conditions.",
-            "Verify inter-MCU communication speed, stability, and synchronization.",
+            "Prototype every circuit identified during the design phase as requiring experimental validation.",
+            "Focus testing on complex or performance-critical circuits where functionality, accuracy, or component behavior cannot be confirmed through analysis alone.",
+            "Measure performance under representative operating conditions.",
+            "Update the schematic and component values according to the test results.",
           ],
         },
         {
-          title: "2. Complete circuit-level prototyping",
+          title: "2. Complete the PCB layout and design review",
           actions: [
-            "Test representative analog, digital, driver, and communication channels.",
-            "Verify 24 V compatibility, filtering, voltage scaling, and protection behavior.",
-            "Correct any limitations identified during testing.",
+            "Begin the PCB layout after incorporating the prototyping results and finalizing the schematic.",
+            "Define the placement and routing while considering controlled impedance, parasitic track capacitance, signal integrity, grounding, current capacity, and thermal constraints.",
+            "Use AI-assisted checks to support the design-review process alongside standard engineering verification.",
           ],
         },
         {
-          title: "3. Finalize the schematic and BOM",
+          title: "3. Finalize manufacturing data and prepare the test plan",
           actions: [
-            "Integrate the prototype results and complete the remaining component selections.",
-            "Review all repeated blocks, component ratings, tolerances, availability, and alternatives.",
-            "Freeze the schematic and confirm that the cost supports the one-HiL-per-employee objective.",
+            "Complete the PCB design, manufacturing files, assembly data, and final BOM.",
+            "Order the PCB and components.",
+            "Develop a detailed board bring-up and validation plan in parallel with PCB manufacturing and component procurement.",
+            "Define the required equipment, test sequence, expected results, tolerances, and acceptance criteria.",
           ],
         },
         {
-          title: "4. Design, manufacture, and bring up the PCB",
+          title: "4. Assemble, bring up, and validate the board",
           actions: [
-            "Complete placement and routing with attention to signal integrity, EMC, grounding, and thermal constraints.",
-            "Manufacture and assemble the first prototype.",
-            "Validate the power rails, both microcontrollers, inter-MCU communication, and each I/O section progressively.",
-          ],
-        },
-        {
-          title: "5. Develop the control and validation software",
-          actions: [
-            "Implement control of the analog, digital, PWM, and communication functions.",
-            "Create software configurations for the three target ECUs, including diagnostics and error reporting.",
-            "Provide a simple setup workflow and an interface for automated validation sequences.",
-          ],
-        },
-        {
-          title: "6. Validate the complete system",
-          actions: [
-            "Test all three ECUs without changing the HiL hardware.",
-            "Run normal-operation and controlled fault scenarios.",
-            "Measure timing, accuracy, reliability, and repeatability against the original requirements.",
+            "Assemble the PCB and perform a controlled initial bring-up.",
+            "Test the board against the validation plan.",
+            "Verify the functionality, accuracy, timing, communication interfaces, protection circuits, and repeatability of the complete system.",
+            "Document the results and correct any issues identified before approving the design.",
           ],
         },
       ],
     },
     homepageProof: [
       "Dual STM32F407ZGT7 architecture",
-      "74 analog and 108 digital I/O channels",
-      "24 V-compatible circuitry and automotive interfaces",
+      "66 analog and 116 digital and power I/O channels",
+      "12 V and 24 V-compatible architecture with automotive interfaces",
     ],
     context:
       "Automotive ECUs need Hardware-in-the-Loop validation to test analog I/O, digital I/O, communication interfaces, timing behavior and fault responses before vehicle-level integration. Commercial HiL systems are powerful but expensive, so the objective is to create a compact internal Simulation Control Unit that can reproduce the I/O behavior needed for ECU validation at lower cost.",
@@ -294,8 +301,8 @@ export const projects: Project[] = [
     implementation: [
       "Defined the functional and electrical requirements: channel count, voltage levels, interface needs, protection strategy, validation constraints and cost direction.",
       "Architected a dual-STM32F407ZGT7 hardware platform with inter-MCU SPI communication specified up to 42 Mbit/s.",
-      "Designed 24 V-compatible I/O circuitry covering 74 analog channels and 108 digital channels, including voltage scaling, filtering, ESD protection and driver stages.",
-      "Planned PWM generation and measurement capability on 36 channels up to 2 kHz, using STM32 timer allocation analysis before committing to PCB layout.",
+      "Designed 12 V and 24 V-compatible I/O circuitry covering 66 analog channels and 116 digital and power I/O channels, including voltage scaling, filtering, ESD protection and driver stages.",
+      "Planned PWM generation and measurement capability across 44 channels up to 2 kHz, including 14 PWM inputs and 30 PWM outputs, using STM32 timer allocation analysis before committing to PCB layout.",
       "Integrated automotive and embedded communication interfaces: 2 CAN, 2 LIN, Ethernet, SPI and I²C, with associated transceivers and support circuitry.",
       "Built the schematic architecture in Altium Designer using reusable schematic blocks, multi-channel blocks, hierarchical sheets, harnesses and bus structures.",
       "Performed MCU pin assignment in STM32CubeMX and started model-based firmware experiments with MATLAB/Simulink, STM32 Microcontroller Blockset and Embedded Coder.",
@@ -313,15 +320,21 @@ export const projects: Project[] = [
       "The current focus is de-risking timer allocation, PWM generation and PWM measurement before the final PCB layout phase.",
     ],
     technologies: [
-      "STM32F407ZGT7",
-      "SPI",
-      "CAN",
+      "STM32",
+      "CAN / CAN FD",
       "LIN",
       "Ethernet",
+      "SPI",
+      "USART / UART",
       "I²C",
-      "PWM",
       "ADC / DAC",
-      "24 V I/O",
+      "PWM",
+      "HSD",
+      "LSD",
+      "Half-bridge",
+      "Analog signal conditioning",
+      "Configurable pull-up / pull-down",
+      "Circuit protection",
       "Model-based design",
     ],
     tools: [

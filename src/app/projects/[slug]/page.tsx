@@ -98,7 +98,11 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
             <h1 className="mt-4 text-4xl font-bold leading-tight text-white sm:text-5xl">
               {project.title}
             </h1>
-            <p className="mt-5 max-w-3xl text-lg leading-8 text-slate-300">
+            <p
+              className={`mt-5 max-w-3xl text-lg leading-8 text-slate-300 ${
+                isHilProject ? "sm:text-justify" : ""
+              }`}
+            >
               {project.summary}
             </p>
             <div className="mt-7 grid gap-3 text-sm text-slate-300 sm:grid-cols-3">
@@ -227,7 +231,7 @@ function ProjectApproach({
   tools: string[];
 }) {
   return (
-    <section className="relative z-10 border-t border-white/10">
+    <section className="relative z-10 border-t border-white/10 sm:[&_p]:text-justify sm:[&_li>span:last-child]:text-justify">
       <div>
         <ApproachBlock number="01" title="Problem">
           <Paragraphs items={approach.problem.paragraphs} />
@@ -316,14 +320,25 @@ function ProjectApproach({
         <ApproachBlock number="04" title="Results" transparent>
           <Paragraphs items={approach.results.paragraphs} />
           <Subheading>Completed at this stage</Subheading>
-          <Bullets items={approach.results.completed} />
+          <div className="space-y-6">
+            {approach.results.completed.map((group) => (
+              <div key={group.title}>
+                <h4 className="font-semibold text-cyan-200">{group.title}</h4>
+                <div className="mt-3">
+                  <Bullets items={group.items} />
+                </div>
+              </div>
+            ))}
+          </div>
         </ApproachBlock>
 
         <ApproachBlock number="05" title="Next Steps">
           <p>
-            The remaining work is organized around proving the critical design
-            assumptions first, then completing the hardware and validating it
-            against the three target ECUs.
+            The remaining work will progress from targeted prototyping of
+            critical circuitry and schematic refinement to PCB layout,
+            manufacturing, board bring-up, and validation of functionality and
+            accuracy against a defined test plan covering the company&apos;s
+            three target VCUs.
           </p>
           <div className="mt-6 grid gap-4 md:grid-cols-2">
             {approach.nextSteps.map((step) => (
