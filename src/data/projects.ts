@@ -54,6 +54,8 @@ export type Project = {
       title: string;
       actions: string[];
     }[];
+    nextStepsTitle?: string;
+    nextStepsIntro?: string;
   };
 };
 
@@ -358,13 +360,310 @@ export const projects: Project[] = [
     slug: "bspd-safety-critical-pcb",
     title: "BSPD Safety-Critical PCB Design",
     shortTitle: "BSPD Safety PCB",
-    company: "ESTACARS - Formula Student",
+    company: "ESTACARS Formula Student - France",
     period: "September 2023 - January 2026",
     role: "Hardware / Embedded Systems Engineer",
     category: "Safety-critical PCB design",
     image: "/portfolio-pages/bspd-safety-critical-pcb.png",
     summary:
-      "Design, simulation, validation and vehicle integration of a Brake System Plausibility Device for an electric Formula Student race car.",
+      "End-to-end development of a standalone, non-programmable Brake System Plausibility Device that protects an electric Formula Student race car by detecting unsafe braking and power-delivery conditions.",
+    approach: {
+      problem: {
+        paragraphs: [
+          "A Formula Student electric vehicle needs an independent safety system that continuously checks whether the driver's braking demand is consistent with the power delivered to the motors. If hard braking and excessive propulsion occur together, the device must open the Shutdown Circuit (SDC), de-energize the Accumulator Isolation Relays, and place the vehicle in a safe state.",
+          "The challenge was broader than detecting two thresholds. Formula Student rules require a standalone, non-programmable circuit supplied directly from the Low Voltage Master Switch. Brake pressure and DC-link current are System Critical Signals, so disconnections, shorts, and out-of-range behavior must also lead to a safe response. The circuit therefore had to combine precise analog measurement, deterministic timing, fault detection, and fail-safe shutdown logic without relying on software.",
+        ],
+        requirements: [
+          "Detect hard braking from a hydraulic pressure sensor while keeping the selected threshold below the wheel-locking condition and at or below 30 bar.",
+          "Detect power delivery above 5 kW; at the vehicle's maximum tractive-system voltage of 404 V, this corresponds to approximately 12 A.",
+          "Open the SDC when the braking and power conditions remain implausible, with the required persistence behavior implemented entirely in hardware.",
+          "Detect open-circuit, short-to-ground, short-to-supply, and out-of-range sensor faults and drive the system to a safe state.",
+          "Use only the minimum required interfaces and allow each sensor signal to be disconnected separately during technical inspection.",
+          "Ensure that a de-energized or disconnected BSPD opens the SDC rather than preserving tractive-system operation.",
+        ],
+      },
+      solution: {
+        paragraphs: [
+          "I developed a dedicated analog BSPD PCBA around two independent physical measurements: an EPT3100 brake-pressure sensor and a LEM HASS 200-S Hall-effect current sensor. The board conditions both signals, compares them against adjustable safety thresholds, detects invalid sensor voltages, applies hardware timing, and controls a relay in the vehicle shutdown circuit.",
+          "The complete decision path is deterministic and non-programmable. Comparators implement the threshold decisions, wired logic combines the braking and current conditions, dedicated monitoring detects sensor faults, and the output stage keeps the relay energized only while the system is healthy. A detected fault removes relay power and opens the SDC.",
+        ],
+        features: [
+          "Dedicated 12 V and 5 V regulated supplies for the analog circuitry and sensors.",
+          "Offset cancellation and approximately x70 amplification of the current-sensor signal.",
+          "Adjustable brake-pressure and current thresholds with deliberate safety margin.",
+          "Hardware plausibility logic requiring simultaneous braking and excessive current.",
+          "Under-range and over-range monitoring for both safety-critical sensor signals.",
+          "RC-based persistence and reset timing with a comparator-controlled shutdown request.",
+          "Fail-safe relay output stage: loss of command or supply opens the shutdown circuit.",
+        ],
+      },
+      method: [
+        {
+          title: "Step 1 - Convert regulations into engineering requirements",
+          paragraphs: [
+            "I began by studying the direct BSPD rules, the related SDC and System Critical Signal requirements, and the 2025 technical-inspection procedure. This established the electrical interfaces, thresholds, timing behavior, failure cases, and evidence that the board would need to provide during scrutineering.",
+            "The safety function was decomposed into sensing, conditioning, plausibility comparison, fault detection, timing, and an independent power stage. This requirements-first decomposition kept each schematic block traceable to a regulatory purpose.",
+          ],
+          images: [
+            {
+              src: "/portfolio-pages/bspd/Shutdown_Circuit_Architecture.png",
+              alt: "Formula Student shutdown circuit architecture showing the BSPD in the safety chain",
+              width: 775,
+              height: 423,
+              displayWidth: "wide",
+            },
+          ],
+          details: [
+            "Standalone, non-programmable implementation with only the necessary supply, sensor, and SDC interfaces.",
+            "Safe-state behavior defined for loss or corruption of each system-critical sensor signal.",
+            "Technical-inspection needs considered before schematic capture and connector selection.",
+          ],
+        },
+        {
+          title: "Step 2 - Select and characterize the sensors",
+          paragraphs: [
+            "For braking demand, I selected a 0-100 bar EPT3100 pressure sensor with a ratiometric 0.5-4.5 V output. Its 0.04 V/bar sensitivity made it possible to define a hardware threshold below the 30 bar regulatory limit.",
+            "For propulsion power, I selected a LEM HASS 200-S Hall-effect sensor covering the vehicle's current range. Converting 5 kW at the maximum 404 V tractive-system voltage produced the critical value of approximately 12 A. I then derived the sensor output relationship and verified the measured zero-current offset before designing the conditioning circuit.",
+          ],
+          images: [
+            {
+              src: "/portfolio-pages/bspd/EPT3100_H_10000_B_5_A.png",
+              alt: "EPT3100 brake pressure sensor selected for hard-braking detection",
+              width: 462,
+              height: 262,
+              fit: "contain",
+            },
+            {
+              src: "/portfolio-pages/bspd/HASS_200_S.png",
+              alt: "LEM HASS 200-S Hall-effect current sensor selected for power-delivery measurement",
+              width: 603,
+              height: 483,
+              fit: "contain",
+            },
+          ],
+        },
+        {
+          title: "Step 3 - Simulate and design the regulated supplies",
+          paragraphs: [
+            "The BSPD is powered from the vehicle's low-voltage system, while its sensors and analog stages require stable rails. I compared regulator solutions in LTspice and selected an adjustable LT1963A for the 12 V rail and an LT1117-5 for the 5 V sensor supply.",
+            "I simulated the 12 V regulator while sweeping the battery voltage from 14.6 V down to 12 V. Above approximately 12.35 V input, the simulated output remained between 12.003 V and 12.006 V. The KiCad implementation added filtering, minimum-load resistors, and an adjustment range to account for real component tolerances.",
+          ],
+          images: [
+            {
+              src: "/portfolio-pages/bspd/12VRegulator_schematic_LTSpice.png",
+              alt: "LTspice schematic used to validate the adjustable 12 volt regulator",
+              width: 1580,
+              height: 549,
+              fit: "contain",
+            },
+            {
+              src: "/portfolio-pages/bspd/12VRegulator_result_LTSpice.png",
+              alt: "LTspice result showing the regulated 12 volt output during an input-voltage sweep",
+              width: 445,
+              height: 391,
+              fit: "contain",
+            },
+          ],
+          details: [
+            "Converted the validated simulation into exact-component KiCad schematics for the 12 V and 5 V rails.",
+            "Used an adjustable 12 V stage to preserve threshold accuracy despite manufacturing tolerances.",
+          ],
+        },
+        {
+          title: "Step 4 - Condition and amplify the current signal",
+          paragraphs: [
+            "The HASS 200-S output contains a zero-current offset close to 2.49 V, while the voltage change produced by 12 A is only about 37.5 mV. I buffered the reference and sensor signals to avoid impedance interactions, subtracted the offset with a differential amplifier, and applied approximately x70 non-inverting gain.",
+            "Adjustable dividers allow calibration of both the measured offset and the final trip threshold. The resulting signal expands the small sensor variation into a range that can be compared reliably by the following analog logic.",
+          ],
+          images: [
+            {
+              src: "/portfolio-pages/bspd/Impedencefollower_schematic_KiCAD.png",
+              alt: "KiCad schematic of the buffered current-sensor reference and offset adjustment",
+              width: 753,
+              height: 749,
+              fit: "contain",
+            },
+            {
+              src: "/portfolio-pages/bspd/Amplifier_schematic_KiCAD.png",
+              alt: "KiCad schematic of the differential subtraction and current-signal amplification stage",
+              width: 886,
+              height: 408,
+              fit: "contain",
+            },
+          ],
+        },
+        {
+          title: "Step 5 - Implement plausibility and sensor-fault detection",
+          paragraphs: [
+            "LM311 comparators evaluate the two physical conditions. The brake channel trips at approximately 1.33 V, corresponding to 20.75 bar. The amplified current channel uses a 2.50 V threshold, corresponding to approximately 11.52 A, which adds margin around the calculated 12 A regulatory point.",
+            "The comparator outputs form hardware AND logic, so the plausibility signal is asserted only when braking and excessive current occur together. Separate comparators monitor the valid voltage windows of both sensors, allowing disconnections, shorts, and implausible outputs to be detected independently of the main safety condition.",
+          ],
+          images: [
+            {
+              src: "/portfolio-pages/bspd/Plausibility_schematic_KiCAD.png",
+              alt: "Comparator-based brake and current plausibility logic in KiCad",
+              width: 579,
+              height: 475,
+              fit: "contain",
+            },
+            {
+              src: "/portfolio-pages/bspd/Overrange_schematic_KiCAD.png",
+              alt: "Under-range and over-range monitoring for the two safety-critical sensor signals",
+              width: 741,
+              height: 703,
+              fit: "contain",
+            },
+          ],
+          details: [
+            "Brake-sensor valid window monitored around its nominal 0.5-4.5 V output range.",
+            "Current-sensor limits selected to detect disconnection, negative implausibility, and excessive positive output.",
+            "A hardware OR stage combines detected failures and provides visible fault feedback on the PCB.",
+          ],
+        },
+        {
+          title: "Step 6 - Create deterministic timing and fail-safe shutdown",
+          paragraphs: [
+            "I implemented the persistence and recovery behavior with an RC network and comparator rather than firmware. The capacitor voltage integrates the fault condition; once it crosses the comparator threshold, the output stage removes power from the BSPD relay and opens the SDC.",
+            "The relay is energized only while the circuit is healthy. This normally energized architecture is fundamental to the fail-safe behavior: a detected fault, broken command path, or loss of BSPD supply releases the relay instead of allowing the tractive system to remain active.",
+          ],
+          images: [
+            {
+              src: "/portfolio-pages/bspd/Timer_schematic_KiCAD.png",
+              alt: "RC timing and comparator circuit used for BSPD persistence and recovery behavior",
+              width: 736,
+              height: 314,
+              fit: "contain",
+            },
+            {
+              src: "/portfolio-pages/bspd/OpenSDC_schematic_KiCAD.png",
+              alt: "Fail-safe relay command circuit that opens the shutdown circuit",
+              width: 586,
+              height: 291,
+              fit: "contain",
+            },
+          ],
+        },
+        {
+          title: "Step 7 - Turn the architecture into a manufacturable PCB",
+          paragraphs: [
+            "After validating the functional blocks, I created the hierarchical KiCad schematic, selected exact component references and vehicle-compatible connectors, and completed the PCB layout. The board separates the signal-conditioning, comparison, timing, supply, and shutdown functions while keeping the inspection interfaces accessible.",
+            "A 3D model was used to review component placement and connector access before manufacturing. I also prepared a complete component list; the report estimates EUR 361.26 to source enough parts and PCBs for three assemblies.",
+          ],
+          images: [
+            {
+              src: "/portfolio-pages/bspd/Layout_PCB_KiCAD.png",
+              alt: "Completed BSPD printed circuit board layout in KiCad",
+              width: 880,
+              height: 742,
+              fit: "contain",
+            },
+            {
+              src: "/portfolio-pages/bspd/3D_PCB_KiCAD.png",
+              alt: "Three-dimensional KiCad model of the assembled BSPD board",
+              width: 987,
+              height: 624,
+              fit: "contain",
+            },
+          ],
+        },
+        {
+          title: "Step 8 - Validate the current-measurement chain",
+          paragraphs: [
+            "I built a physical test setup using a current generator and multiple primary turns through the Hall-effect sensor so that low bench currents reproduced vehicle-equivalent values up to 12 A. The sensor reference and output were measured with an oscilloscope and compared with the datasheet equation at six operating points.",
+            "At zero current, both the reference and output measured 2.49 V. Across the 2.4 A, 4.8 A, 7.2 A, 9.6 A, and 12 A-equivalent tests, the measured voltage change remained within 1 mV of the theoretical value. At the critical 12 A point, 37.4 mV was measured against a calculated 37.5 mV.",
+          ],
+          images: [
+            {
+              src: "/portfolio-pages/bspd/TestingSetup_CurrentSensor_Validation.png",
+              alt: "Bench setup used to validate the BSPD Hall-effect current sensor",
+              width: 848,
+              height: 383,
+              fit: "contain",
+            },
+            {
+              src: "/portfolio-pages/bspd/Test6_CurrentSensor_Validation.png",
+              alt: "Oscilloscope measurement at the 12 ampere-equivalent current-sensor validation point",
+              width: 1142,
+              height: 413,
+              fit: "contain",
+            },
+          ],
+          details: [
+            "Six documented measurement points from zero current to the 12 A-equivalent safety threshold.",
+            "Maximum documented deviation from the theoretical sensor response below 1 mV.",
+            "Experimental evidence used to confirm a critical design assumption before complete-system testing.",
+          ],
+        },
+      ],
+      results: {
+        paragraphs: [
+          "The project progressed from regulatory analysis to a complete standalone BSPD hardware design, PCB layout, manufacturing definition, and targeted experimental validation. The result demonstrates an end-to-end safety-electronics workflow: translating rules into requirements, calculating thresholds, simulating critical circuits, designing deterministic analog logic, and checking measured behavior against theory.",
+        ],
+        completed: [
+          {
+            title: "Safety architecture and detailed design",
+            items: [
+              "Standalone non-programmable BSPD architecture covering braking, current, plausibility, sensor-fault, timing, and SDC output functions.",
+              "Brake threshold designed at approximately 20.75 bar and current threshold designed at approximately 11.52 A to provide margin around the regulatory limits.",
+              "Complete KiCad schematic, PCB layout, 3D assembly review, exact component selection, and connector definition completed.",
+            ],
+          },
+          {
+            title: "Simulation and engineering evidence",
+            items: [
+              "LTspice validation of the adjustable 12 V supply across the expected low-voltage battery range.",
+              "Sensor transfer functions, analog offsets, gain, comparator thresholds, and fault-detection windows calculated from component data.",
+              "BOM prepared for three boards with a documented total sourcing estimate of EUR 361.26.",
+            ],
+          },
+          {
+            title: "Experimental validation",
+            items: [
+              "Current-sensor offset verified at 2.49 V under zero-current conditions.",
+              "Sensor response checked at five non-zero operating points up to the 12 A-equivalent BSPD threshold.",
+              "Measured current-sensor response matched the theoretical result with less than 1 mV deviation throughout the documented test series.",
+            ],
+          },
+        ],
+      },
+      nextStepsTitle: "Improvement axis",
+      nextStepsIntro:
+        "The next engineering iteration would focus on simplifying the conditioning path and extending the documented sensor validation into a complete, tolerance-aware verification of the assembled safety function.",
+      nextSteps: [
+        {
+          title: "1. Refine the analog conditioning stage",
+          actions: [
+            "Remove the temporary R10/C4 filter path identified in the report and recalibrate the offset-cancellation stage around the measured 2.49 V reference.",
+            "Recalculate every trip point with resistor, potentiometer, comparator-offset, and sensor-tolerance worst cases.",
+            "Confirm threshold stability across the full vehicle low-voltage range and expected temperature range.",
+          ],
+        },
+        {
+          title: "2. Validate the complete signal chain",
+          actions: [
+            "Inject calibrated brake-pressure and current signals through the complete assembled board.",
+            "Measure the real brake, current, under-range, and over-range trip points instead of validating the current sensor alone.",
+            "Verify the delay and recovery behavior at nominal values and worst-case component tolerances.",
+          ],
+        },
+        {
+          title: "3. Execute systematic safety-fault tests",
+          actions: [
+            "Test open circuit, short to ground, and short to supply on every system-critical sensor wire.",
+            "Verify brownout, BSPD power loss, relay-coil interruption, and output-stage failure behavior.",
+            "Record quantitative acceptance criteria and trace every result back to its Formula Student rule.",
+          ],
+        },
+        {
+          title: "4. Complete vehicle-level qualification",
+          actions: [
+            "Validate the relay output with representative SDC steady-state and inrush current.",
+            "Perform the complete scrutineering-style sequence on the high-voltage vehicle, including the 5 kW and hard-braking condition.",
+            "Review EMC, grounding, vibration, temperature, connector retention, and environmental protection before freezing the next revision.",
+          ],
+        },
+      ],
+    },
     homepageProof: [
       "FSG2025 regulation-focused validation",
       "LTspice simulation with real component models",
@@ -393,13 +692,27 @@ export const projects: Project[] = [
     ],
     technologies: [
       "Analog signal conditioning",
+      "Operational amplifiers",
       "Comparators",
-      "Safety logic",
+      "Hardware safety logic",
+      "RC timing",
       "Brake pressure sensing",
-      "Current sensing",
-      "Low-voltage vehicle electronics",
+      "Hall-effect current sensing",
+      "Voltage regulation",
+      "Fault and over-range detection",
+      "Fail-safe shutdown circuitry",
+      "Formula Student SCS / SDC design",
     ],
-    tools: ["KiCad", "LTspice", "Oscilloscope", "Bench power supply"],
+    tools: [
+      "KiCad",
+      "LTspice",
+      "Oscilloscope",
+      "Bench power supply",
+      "Current generator",
+      "Component datasheets",
+      "Formula Student regulations",
+      "Technical inspection sheets",
+    ],
   },
   {
     slug: "rs485-emi-diagnosis",

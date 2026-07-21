@@ -40,11 +40,11 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
     notFound();
   }
 
-  const isHilProject = project.slug === "simulation-control-unit";
+  const usesApproachDesign = Boolean(project.approach);
 
   return (
     <main className="relative min-h-screen overflow-hidden bg-[#05070a] text-slate-100">
-      {isHilProject ? (
+      {usesApproachDesign ? (
         <>
           <Image
             src="/hero-pcb-background.jpeg"
@@ -62,7 +62,7 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
 
       <header
         className={`relative z-30 border-b border-white/10 ${
-          isHilProject
+          usesApproachDesign
             ? "bg-[linear-gradient(180deg,#071225_0%,#050b18_100%)] shadow-[inset_0_-18px_35px_rgba(0,0,0,0.18)] backdrop-blur"
             : "bg-[#05070a]/95"
         }`}
@@ -81,12 +81,12 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
       </header>
 
       <section className="relative z-10 border-b border-white/10 px-5 py-14 sm:py-18">
-        {!isHilProject ? (
+        {!usesApproachDesign ? (
           <div className="absolute inset-0 opacity-20 circuit-grid" />
         ) : null}
         <div
           className={`relative mx-auto max-w-6xl ${
-            isHilProject
+            usesApproachDesign
               ? ""
               : "grid gap-10 lg:grid-cols-[1fr_0.9fr] lg:items-center"
           }`}
@@ -100,19 +100,26 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
             </h1>
             <p
               className={`mt-5 max-w-3xl text-lg leading-8 text-slate-300 ${
-                isHilProject ? "sm:text-justify" : ""
+                usesApproachDesign ? "sm:text-justify" : ""
               }`}
             >
               {project.summary}
             </p>
             <div className="mt-7 grid gap-3 text-sm text-slate-300 sm:grid-cols-3">
-              <Fact label="Company" value={project.company} />
+              <Fact
+                label={
+                  project.slug === "bspd-safety-critical-pcb"
+                    ? "Project"
+                    : "Company"
+                }
+                value={project.company}
+              />
               <Fact label="Period" value={project.period} />
               <Fact label="Role" value={project.role} />
             </div>
           </div>
 
-          {!isHilProject ? (
+          {!usesApproachDesign ? (
             <div className="overflow-hidden rounded-lg border border-cyan-300/20 bg-white/[0.03] shadow-2xl shadow-cyan-950/30">
               <Image
                 src={project.image}
@@ -172,7 +179,7 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
         </section>
       )}
 
-      {!isHilProject ? (
+      {!usesApproachDesign ? (
         <section className="relative z-10 border-t border-white/10 px-5 py-14">
           <div className="mx-auto max-w-6xl">
             <p className="text-sm font-semibold uppercase text-cyan-300">
@@ -192,7 +199,7 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
         </section>
       ) : null}
 
-      {isHilProject ? (
+      {usesApproachDesign ? (
         <footer className="relative z-10 border-t border-white/10 bg-[linear-gradient(180deg,#071225_0%,#050b18_100%)] px-5 py-6 shadow-[inset_0_18px_35px_rgba(0,0,0,0.18)]">
           <div className="mx-auto grid max-w-7xl gap-3 text-sm text-slate-300 sm:grid-cols-3 sm:items-center">
             <p className="sm:justify-self-start">
@@ -274,10 +281,10 @@ function ProjectApproach({
                       <div
                         key={image.src}
                         className={`overflow-hidden rounded-lg border border-white/10 bg-white ${
-                          step.images.length === 3 && imageIndex === 0
+                          (step.images?.length ?? 0) === 3 && imageIndex === 0
                             ? "sm:row-span-2"
-                            : step.images.length > 1 &&
-                                step.images.length !== 3 &&
+                            : (step.images?.length ?? 0) > 1 &&
+                                (step.images?.length ?? 0) !== 3 &&
                                 image.fit !== "equal-height"
                             ? "aspect-[4/3]"
                             : image.fit === "equal-height"
@@ -293,8 +300,8 @@ function ProjectApproach({
                           className={
                             image.fit === "equal-height"
                               ? "h-auto w-full sm:h-80 sm:w-auto"
-                              : step.images.length > 1 &&
-                            step.images.length !== 3
+                              : (step.images?.length ?? 0) > 1 &&
+                            (step.images?.length ?? 0) !== 3
                               ? `h-full w-full ${
                                   image.fit === "cover"
                                     ? "object-cover"
@@ -332,13 +339,13 @@ function ProjectApproach({
           </div>
         </ApproachBlock>
 
-        <ApproachBlock number="05" title="Next Steps">
+        <ApproachBlock
+          number="05"
+          title={approach.nextStepsTitle ?? "Next Steps"}
+        >
           <p>
-            The remaining work will progress from targeted prototyping of
-            critical circuitry and schematic refinement to PCB layout,
-            manufacturing, board bring-up, and validation of functionality and
-            accuracy against a defined test plan covering the company&apos;s
-            three target VCUs.
+            {approach.nextStepsIntro ??
+              "The remaining work will progress from targeted prototyping of critical circuitry and schematic refinement to PCB layout, manufacturing, board bring-up, and validation of functionality and accuracy against a defined test plan covering the company's three target VCUs."}
           </p>
           <div className="mt-6 grid gap-4 md:grid-cols-2">
             {approach.nextSteps.map((step) => (
