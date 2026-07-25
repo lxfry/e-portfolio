@@ -2,11 +2,16 @@ import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
+import { Fragment, type CSSProperties } from "react";
 import { getProject, projects, type Project } from "@/data/projects";
 
 type ProjectPageProps = {
   params: Promise<{ slug: string }>;
 };
+
+type MethodImage = NonNullable<
+  NonNullable<Project["approach"]>["method"][number]["images"]
+>[number];
 
 export function generateStaticParams() {
   return projects.map((project) => ({
@@ -99,9 +104,9 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
               {project.title}
             </h1>
             <p
-              className={`mt-5 max-w-3xl text-lg leading-8 text-slate-300 ${
-                usesApproachDesign ? "sm:text-justify" : ""
-              }`}
+              className={`mt-5 text-lg leading-8 text-slate-300 ${
+                project.summaryFullWidth ? "max-w-none" : "max-w-3xl"
+              } ${usesApproachDesign ? "sm:text-justify" : ""}`}
             >
               {project.summary}
             </p>
@@ -139,13 +144,17 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
           approach={project.approach}
           technologies={project.technologies}
           tools={project.tools}
+          toolsTitle={project.toolsTitle}
         />
       ) : (
         <section className="relative z-10 px-5 py-14">
           <div className="mx-auto grid max-w-6xl gap-8 lg:grid-cols-[0.75fr_1.25fr]">
             <aside className="space-y-5">
               <InfoCard title="Technologies" items={project.technologies} />
-              <InfoCard title="Tools" items={project.tools} />
+              <InfoCard
+                title={project.toolsTitle ?? "Tools"}
+                items={project.tools}
+              />
             </aside>
 
             <article className="space-y-8">
@@ -232,10 +241,12 @@ function ProjectApproach({
   approach,
   technologies,
   tools,
+  toolsTitle,
 }: {
   approach: NonNullable<Project["approach"]>;
   technologies: string[];
   tools: string[];
+  toolsTitle?: string;
 }) {
   return (
     <section className="relative z-10 border-t border-white/10 sm:[&_p]:text-justify sm:[&_li>span:last-child]:text-justify">
@@ -262,58 +273,25 @@ function ProjectApproach({
                 <h3 className="text-lg font-semibold text-cyan-200">
                   {step.title}
                 </h3>
-                <div className="mt-3">
-                  <Paragraphs items={step.paragraphs} />
+                <div className="mt-3 space-y-4">
+                  {step.paragraphs.map((paragraph, paragraphIndex) => (
+                    <Fragment key={paragraph}>
+                      <p>{paragraph}</p>
+                      {step.inlineImages
+                        ?.filter(
+                          (group) =>
+                            group.afterParagraph === paragraphIndex + 1,
+                        )
+                        .map((group) => (
+                          <MethodImages
+                            key={`after-${group.afterParagraph}`}
+                            images={group.images}
+                          />
+                        ))}
+                    </Fragment>
+                  ))}
                 </div>
-                {step.images ? (
-                  <div
-                    className={`mx-auto mt-6 grid items-center gap-4 ${
-                      step.images.length === 3
-                        ? "max-w-5xl items-start sm:grid-cols-[minmax(0,0.4fr)_minmax(0,1fr)]"
-                        : step.images.length > 1
-                        ? "max-w-5xl sm:grid-cols-2"
-                        : step.images[0].displayWidth === "wide"
-                        ? "max-w-5xl sm:max-w-[75%]"
-                        : "max-w-5xl sm:max-w-[50%]"
-                    }`}
-                  >
-                    {step.images.map((image, imageIndex) => (
-                      <div
-                        key={image.src}
-                        className={`overflow-hidden rounded-lg border border-white/10 bg-white ${
-                          (step.images?.length ?? 0) === 3 && imageIndex === 0
-                            ? "sm:row-span-2"
-                            : (step.images?.length ?? 0) > 1 &&
-                                (step.images?.length ?? 0) !== 3 &&
-                                image.fit !== "equal-height"
-                            ? "aspect-[4/3]"
-                            : image.fit === "equal-height"
-                            ? "justify-self-center"
-                            : ""
-                        }`}
-                      >
-                        <Image
-                          src={image.src}
-                          alt={image.alt}
-                          width={image.width}
-                          height={image.height}
-                          className={
-                            image.fit === "equal-height"
-                              ? "h-auto w-full sm:h-80 sm:w-auto"
-                              : (step.images?.length ?? 0) > 1 &&
-                            (step.images?.length ?? 0) !== 3
-                              ? `h-full w-full ${
-                                  image.fit === "cover"
-                                    ? "object-cover"
-                                    : "object-contain"
-                                }`
-                              : "h-auto w-full"
-                          }
-                        />
-                      </div>
-                    ))}
-                  </div>
-                ) : null}
+                {step.images ? <MethodImages images={step.images} /> : null}
                 {step.details ? (
                   <div className="mt-4">
                     <Bullets items={step.details} />
@@ -326,7 +304,9 @@ function ProjectApproach({
 
         <ApproachBlock number="04" title="Results" transparent>
           <Paragraphs items={approach.results.paragraphs} />
-          <Subheading>Completed at this stage</Subheading>
+          <Subheading>
+            {approach.results.completedTitle ?? "Completed at this stage"}
+          </Subheading>
           <div className="space-y-6">
             {approach.results.completed.map((group) => (
               <div key={group.title}>
@@ -339,33 +319,35 @@ function ProjectApproach({
           </div>
         </ApproachBlock>
 
-        <ApproachBlock
-          number="05"
-          title={approach.nextStepsTitle ?? "Next Steps"}
-        >
-          <p>
-            {approach.nextStepsIntro ??
-              "The remaining work will progress from targeted prototyping of critical circuitry and schematic refinement to PCB layout, manufacturing, board bring-up, and validation of functionality and accuracy against a defined test plan covering the company's three target VCUs."}
-          </p>
-          <div className="mt-6 grid gap-4 md:grid-cols-2">
-            {approach.nextSteps.map((step) => (
-              <div
-                key={step.title}
-                className="rounded-lg border border-white/10 bg-slate-950/70 p-5"
-              >
-                <h3 className="font-semibold text-cyan-200">{step.title}</h3>
-                <div className="mt-3">
-                  <Bullets items={step.actions} />
+        {approach.nextSteps?.length ? (
+          <ApproachBlock
+            number="05"
+            title={approach.nextStepsTitle ?? "Next Steps"}
+          >
+            <p>
+              {approach.nextStepsIntro ??
+                "The remaining work will progress from targeted prototyping of critical circuitry and schematic refinement to PCB layout, manufacturing, board bring-up, and validation of functionality and accuracy against a defined test plan covering the company's three target VCUs."}
+            </p>
+            <div className="mt-6 grid gap-4 md:grid-cols-2">
+              {approach.nextSteps.map((step) => (
+                <div
+                  key={step.title}
+                  className="rounded-lg border border-white/10 bg-slate-950/70 p-5"
+                >
+                  <h3 className="font-semibold text-cyan-200">{step.title}</h3>
+                  <div className="mt-3">
+                    <Bullets items={step.actions} />
+                  </div>
                 </div>
-              </div>
-            ))}
-          </div>
-        </ApproachBlock>
+              ))}
+            </div>
+          </ApproachBlock>
+        ) : null}
 
         <div className="px-5 py-14">
           <div className="mx-auto grid max-w-6xl gap-5 lg:grid-cols-2">
             <InfoCard title="Technologies" items={technologies} />
-            <InfoCard title="Tools" items={tools} />
+            <InfoCard title={toolsTitle ?? "Tools"} items={tools} />
           </div>
         </div>
       </div>
@@ -400,6 +382,82 @@ function ApproachBlock({
         <div className="leading-8 text-slate-300">{children}</div>
       </div>
     </section>
+  );
+}
+
+function MethodImages({ images }: { images: MethodImage[] }) {
+  return (
+    <div
+      className={`mx-auto mt-6 grid items-center gap-4 ${
+        images.length === 3
+          ? "max-w-5xl items-start sm:grid-cols-[minmax(0,0.4fr)_minmax(0,1fr)]"
+          : images.length > 1 &&
+            images.every((image) => image.fit === "equal-height")
+          ? "max-w-5xl lg:grid-cols-[repeat(2,max-content)] lg:items-start lg:justify-center"
+          : images.length > 1
+          ? "max-w-5xl sm:grid-cols-2"
+          : images[0].displayWidth === "wide"
+          ? "max-w-5xl sm:max-w-[75%]"
+          : "max-w-5xl sm:max-w-[50%]"
+      }`}
+    >
+      {images.map((image, imageIndex) => (
+        <figure
+          key={image.src}
+          style={
+            image.fit === "equal-height"
+              ? ({
+                  "--equal-height-width": `${
+                    (image.width / image.height) *
+                    (image.displayHeightRem ?? 18)
+                  }rem`,
+                  "--equal-height-height": `${
+                    image.displayHeightRem ?? 18
+                  }rem`,
+                } as CSSProperties)
+              : undefined
+          }
+          className={`${
+            images.length === 3 && imageIndex === 0
+              ? "sm:row-span-2"
+              : image.fit === "equal-height"
+              ? "w-full justify-self-center lg:w-[var(--equal-height-width)]"
+              : ""
+          }`}
+        >
+          <div
+            className={`overflow-hidden rounded-lg border border-white/10 bg-white ${
+              images.length > 1 &&
+              images.length !== 3 &&
+              image.fit !== "equal-height"
+                ? "aspect-[4/3]"
+                : ""
+            }`}
+          >
+            <Image
+              src={image.src}
+              alt={image.alt}
+              width={image.width}
+              height={image.height}
+              className={
+                image.fit === "equal-height"
+                  ? "h-auto w-full lg:h-[var(--equal-height-height)]"
+                  : images.length > 1 && images.length !== 3
+                  ? `h-full w-full ${
+                      image.fit === "cover" ? "object-cover" : "object-contain"
+                    }`
+                  : "h-auto w-full"
+              }
+            />
+          </div>
+          {image.caption ? (
+            <figcaption className="mt-2 text-center text-sm leading-relaxed text-slate-400">
+              {image.caption}
+            </figcaption>
+          ) : null}
+        </figure>
+      ))}
+    </div>
   );
 }
 

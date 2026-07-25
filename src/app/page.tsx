@@ -240,7 +240,13 @@ export default function Home() {
               >
                 <div className="relative aspect-video overflow-hidden border-b border-white/10">
                   {project.homepageImages ? (
-                    <div className="grid h-full grid-cols-[0.9fr_1.4fr] grid-rows-[0.75fr_1.25fr] gap-1 bg-slate-950">
+                    <div
+                      className={`grid h-full grid-rows-[0.75fr_1.25fr] gap-1 bg-slate-950 ${
+                        project.homepageImageLayout === "wide-left"
+                          ? "grid-cols-[1.8fr_1fr]"
+                          : "grid-cols-[0.9fr_1.4fr]"
+                      }`}
+                    >
                       {project.homepageImages.map((image, imageIndex) => (
                         <div
                           key={image.src}
@@ -255,7 +261,10 @@ export default function Home() {
                             alt={image.alt}
                             fill
                             className={`transition duration-500 group-hover:scale-105 ${
-                              imageIndex < 2 ? "object-cover" : "object-contain"
+                              image.fit === "contain" ||
+                              (!image.fit && imageIndex >= 2)
+                                ? "object-contain"
+                                : "object-cover"
                             }`}
                             sizes="(max-width: 1024px) 50vw, 25vw"
                           />
@@ -274,7 +283,8 @@ export default function Home() {
                 </div>
                 <div className="p-5">
                   <p className="text-sm font-semibold text-cyan-300">
-                    {project.company} - {project.period}
+                    {project.homepageCompany ?? project.company} |{" "}
+                    {project.period}
                   </p>
                   <h3 className="mt-3 text-2xl font-semibold text-white">
                     {project.shortTitle}
