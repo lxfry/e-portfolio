@@ -905,7 +905,7 @@ export const projects: Project[] = [
   },
   {
     slug: "rs485-emi-diagnosis",
-    title: "EMI Issue Diagnosis on RS-485 BMS Communication",
+    title: "Diagnosis and Mitigation of EMI on RS-485 BMS Communication",
     shortTitle: "RS-485 EMI Diagnosis",
     company: "ESTACARS - Formula Student",
     homepageCompany: "ESTACARS Formula Student (France)",
@@ -914,43 +914,240 @@ export const projects: Project[] = [
     category: "EMI debugging and vehicle integration",
     image: "/portfolio-pages/rs485-emi-diagnosis.png",
     summary:
-      "Root-cause diagnosis and correction of RS-485 BMS communication loss during high-voltage power delivery on an electric race car.",
+      "Measurement-led diagnosis and hardware mitigation of EMI-induced RS-485 BMS communication loss during high-voltage power delivery.",
+    summaryFullWidth: true,
+    approach: {
+      problem: {
+        paragraphs: [
+          "During high-voltage power delivery, the BMS RS-485 link became unstable and stopped delivering battery voltage, temperature, and current data. The vehicle safety system correctly reacted to the missing BMS communication by opening the Accumulator Isolation Relays (AIRs), but the repeated unintended shutdowns prevented reliable vehicle operation.",
+          "Because the link behaved normally outside these operating conditions, the investigation had to distinguish between a software or protocol failure and a physical-layer disturbance created by the powertrain. The work therefore focused on reproducing the fault, measuring both RS-485 conductors during HV operation, identifying the interference signature, and implementing a mitigation that preserved the communication waveform.",
+        ],
+        requirements: [
+          "Reproduce the communication failure under controlled high-voltage operating conditions.",
+          "Measure the RS-485 physical layer and correlate electrical disturbances with BMS communication errors.",
+          "Identify the dominant interference frequency and its relationship with powertrain operation.",
+          "Attenuate the interference without excessively degrading the RS-485 differential amplitude or edge timing.",
+          "Restore continuous BMS sensor data and eliminate AIR openings caused by communication loss.",
+        ],
+      },
+      solution: {
+        paragraphs: [
+          "I instrumented the RS-485 link with a Tektronix DPO4054 oscilloscope while monitoring the BMS diagnostic logs and repeatedly operating the high-voltage system. The disturbed captures contained repetitive high-frequency spikes at approximately 71.1 kHz. Their appearance during power delivery and consistency with the inverter switching behavior strongly indicated EMI coupling from the powertrain into the communication path.",
+          "I developed a passive RC filtering solution for the RS-485 path and tuned it experimentally. Each iteration balanced high-frequency attenuation against differential-signal amplitude, transition time, and reliable frame reception. I also reviewed the grounding and shielding arrangement to reduce the available coupling paths.",
+          "After implementing the selected filter network in the accumulator wiring, I repeated the same high-voltage operating sequence. The filtered waveform retained clearly distinguishable communication states, BMS sensor messages remained available, and communication loss no longer triggered unintended AIR opening during the tested conditions.",
+        ],
+        features: [
+          "Oscilloscope-based diagnosis under representative HV operation.",
+          "Frequency correlation between the measured interference and inverter switching.",
+          "Passive RC mitigation tuned against both noise attenuation and signal integrity.",
+          "Grounding and shielding improvements within the accumulator installation.",
+          "Before-and-after validation using waveforms, BMS logs, and vehicle behavior.",
+        ],
+      },
+      method: [
+        {
+          title: "Step 1 - Reproduce and bound the HV-dependent failure",
+          paragraphs: [
+            "I first reproduced the problem with the accumulator, BMS, and communication wiring installed in their operating configuration. The RS-485 network remained functional before high-voltage power delivery, then lost BMS messages when the powertrain became active. This bounded the fault to an interaction with the energized HV system rather than a permanent communication or software defect.",
+            "The failure criterion combined electrical and functional evidence: missing voltage, temperature, and current messages in the BMS logs, followed by the safety system opening the AIRs because valid battery data was no longer available.",
+          ],
+          images: [
+            {
+              src: "/portfolio-pages/emi/accumulator-bms-test-setup.jpg",
+              alt: "Formula Student accumulator and BMS wiring configured for EMI reproduction tests",
+              caption:
+                "Accumulator, BMS, and communication wiring configured for controlled reproduction of the HV-dependent fault.",
+              width: 1024,
+              height: 768,
+              displayWidth: "wide",
+              fit: "contain",
+            },
+          ],
+          details: [
+            "Confirmed that communication loss appeared specifically during high-voltage power delivery.",
+            "Used both missing BMS data and AIR opening as functional failure indicators.",
+          ],
+        },
+        {
+          title: "Step 2 - Measure and correlate the RS-485 disturbance",
+          paragraphs: [
+            "I monitored both conductors of the RS-485 pair with the oscilloscope while the laptop recorded the BMS communication behavior. This allowed the physical-layer disturbance, software error messages, and high-voltage operating state to be compared during the same event.",
+            "The captures showed repetitive spike trains superimposed on the communication levels. Their repetition frequency was measured at approximately 71.1 kHz and was consistent with the inverter IGBT switching behavior. The correlation strongly supported a hardware EMI mechanism rather than an independent application-layer fault.",
+          ],
+          images: [
+            {
+              src: "/portfolio-pages/emi/disturbed-rs485-waveform.jpg",
+              alt: "Oscilloscope capture of the RS-485 pair disturbed by repetitive high-frequency spikes",
+              caption:
+                "Disturbed RS-485 conductors with repetitive interference measured at approximately 71.1 kHz.",
+              width: 768,
+              height: 1024,
+              displayWidth: "wide",
+              fit: "contain",
+            },
+          ],
+          details: [
+            "Captured the electrical disturbance under the same conditions that produced communication loss.",
+            "Correlated the measured interference frequency with inverter operation.",
+          ],
+        },
+        {
+          title: "Step 3 - Design and tune the passive mitigation",
+          paragraphs: [
+            "Based on the measured frequency content, I designed a first-order RC network for the RS-485 communication path. The objective was to attenuate the high-frequency spikes while preserving sufficient differential amplitude, transition speed, and timing margin for reliable frame detection.",
+            "The component values were tuned iteratively rather than selected from frequency alone. After each change, I compared the waveform and BMS logs to verify that interference was reduced without filtering the communication edges excessively. The grounding and shielding arrangement was reviewed in parallel because filtering alone would not remove the underlying coupling paths.",
+          ],
+          images: [
+            {
+              src: "/portfolio-pages/emi/rs485-rc-filter-schematic.png",
+              alt: "Schematic of the RC network added to the RS-485 communication path",
+              caption:
+                "Implemented RC network used to attenuate high-frequency interference on the RS-485 path.",
+              width: 1080,
+              height: 720,
+              displayWidth: "wide",
+              fit: "contain",
+            },
+          ],
+          details: [
+            "Balanced noise suppression against RS-485 signal integrity.",
+            "Evaluated grounding and shielding together with the passive filter.",
+          ],
+        },
+        {
+          title: "Step 4 - Implement the filter in the accumulator",
+          paragraphs: [
+            "Once the filter values were selected, I implemented the network directly in the accumulator communication wiring. The components and connections were soldered, mechanically secured, and inspected while keeping the added lead lengths short.",
+            "I also improved the local grounding and shielding arrangement to reduce interference coupling into the communication path. The complete installation was then prepared for validation under the same operating conditions used to reproduce the original fault.",
+          ],
+          images: [
+            {
+              src: "/portfolio-pages/emi/filter-hardware-implementation.jpg",
+              alt: "Hardware rework implementing the RS-485 filter inside the accumulator",
+              caption:
+                "Implementation and inspection of the selected RS-485 mitigation inside the accumulator.",
+              width: 768,
+              height: 1024,
+              fit: "contain",
+            },
+          ],
+          details: [
+            "Installed the tuned RC network in the real communication path.",
+            "Improved the physical grounding and shielding configuration.",
+          ],
+        },
+        {
+          title: "Step 5 - Validate signal integrity and system behavior",
+          paragraphs: [
+            "I repeated the high-voltage operating sequence with the same oscilloscope points and BMS monitoring used during diagnosis. The post-mitigation capture showed that the repetitive spike bursts were strongly reduced while the two communication states remained clearly distinguishable.",
+            "The electrical improvement was confirmed at system level: BMS voltage, temperature, and current messages remained available, the diagnostic error messages disappeared, and communication loss no longer caused unintended AIR opening during the tested operating conditions.",
+          ],
+          images: [
+            {
+              src: "/portfolio-pages/emi/diagnostic-session.jpg",
+              alt: "Engineer validating the filtered RS-485 communication with an oscilloscope and BMS logs",
+              caption:
+                "Simultaneous oscilloscope and BMS-log validation after implementing the mitigation.",
+              width: 768,
+              height: 1024,
+              displayHeightRem: 18,
+              fit: "equal-height",
+            },
+            {
+              src: "/portfolio-pages/emi/filtered-rs485-waveform.jpg",
+              alt: "Oscilloscope capture of the RS-485 communication after filtering",
+              caption:
+                "Post-mitigation waveform with the communication states preserved and interference reduced.",
+              width: 1024,
+              height: 768,
+              displayHeightRem: 18,
+              fit: "equal-height",
+            },
+          ],
+          details: [
+            "Repeated the original failure sequence for a direct before-and-after comparison.",
+            "Confirmed the correction through waveforms, diagnostic logs, sensor data, and AIR behavior.",
+          ],
+        },
+      ],
+      results: {
+        paragraphs: [
+          "The implemented mitigation restored reliable RS-485 BMS communication throughout the tested high-voltage operating conditions. Battery sensor data remained available and communication loss no longer produced unintended AIR openings.",
+        ],
+        completedTitle: "Key outcomes",
+        completed: [
+          {
+            title: "Root cause supported by measurement",
+            items: [
+              "Communication loss was reproduced specifically during high-voltage power delivery.",
+              "A repetitive disturbance near 71.1 kHz was correlated with inverter switching behavior.",
+            ],
+          },
+          {
+            title: "Hardware mitigation implemented",
+            items: [
+              "A first-order RC network was tuned and installed in the RS-485 path.",
+              "Grounding and shielding were improved to reduce interference coupling.",
+            ],
+          },
+          {
+            title: "Vehicle behavior restored",
+            items: [
+              "The filtered waveform preserved reliable RS-485 communication states.",
+              "BMS sensor data and diagnostic communication remained available.",
+              "No communication-related AIR opening occurred during the validation tests.",
+            ],
+          },
+        ],
+      },
+    },
     homepageProof: [
       "Oscilloscope-based differential signal diagnosis",
       "Noise matched to inverter IGBT switching frequency",
       "Communication restored under operating conditions",
     ],
     context:
-      "During high-voltage power delivery, the vehicle experienced RS-485 BMS communication loss that triggered unintended AIR opening. The failure was system-level: electrical noise, communication integrity, grounding and powertrain operation interacted under real vehicle conditions.",
+      "During high-voltage power delivery, EMI disrupted the RS-485 BMS link, interrupted battery sensor data, and caused the vehicle safety system to open the AIRs.",
     roleDescription:
-      "I diagnosed the communication failure, measured the RS-485 differential signals under operating conditions and implemented a hardware mitigation strategy to restore robust communication.",
+      "I reproduced the failure, measured and correlated the interference, developed the RC mitigation, implemented the hardware changes, and validated the corrected system under high-voltage operation.",
     implementation: [
-      "Reproduced and observed communication failures during high-voltage operating conditions.",
-      "Measured the RS-485 differential pair using an oscilloscope and correlated the failures with power delivery events.",
-      "Identified noise components matching the inverter IGBT switching frequency, indicating EMI coupling into the communication lines.",
-      "Designed and implemented a first-order RC filter on the RS-485 lines to attenuate high-frequency noise.",
-      "Iteratively tuned filter values to balance noise attenuation with signal integrity.",
-      "Improved grounding and shielding strategy to reduce coupling paths.",
+      "Reproduced the RS-485 communication loss during high-voltage power delivery.",
+      "Measured both communication conductors and correlated a 71.1 kHz disturbance with inverter operation.",
+      "Designed and tuned a passive RC network while monitoring waveform quality and BMS logs.",
+      "Implemented the filter and improved grounding and shielding inside the accumulator.",
+      "Repeated the operating sequence and confirmed reliable communication and AIR behavior.",
     ],
     proof: [
-      "The failure mechanism was supported by oscilloscope measurements, not only by software logs.",
-      "The implemented correction targeted the measured noise frequency content.",
-      "The final behavior was validated under operating conditions.",
+      "The diagnosis combined oscilloscope captures, BMS logs, and repeatable HV operating events.",
+      "The correction targeted the measured interference while preserving the communication waveform.",
+      "The final behavior was verified using the same conditions that reproduced the original failure.",
     ],
     results: [
-      "Reliable RS-485 communication was restored under all operating conditions tested.",
-      "Unintended AIR openings caused by communication loss were eliminated.",
-      "The vehicle system robustness improved through a combined filtering, grounding and shielding correction.",
+      "Reliable RS-485 communication was restored under the tested HV operating conditions.",
+      "BMS voltage, temperature, and current data remained available.",
+      "Communication-related AIR openings were eliminated during validation.",
     ],
     technologies: [
-      "RS-485",
+      "Automotive RS-485 communication",
       "BMS communication",
-      "High-voltage powertrain",
-      "EMI filtering",
-      "Grounding strategy",
-      "Signal integrity",
+      "EMC and EMI troubleshooting",
+      "Differential signal integrity",
+      "Passive RC filtering",
+      "Grounding and shielding",
+      "HV/LV system integration",
+      "Hardware fault isolation",
+      "Vehicle-level validation",
     ],
-    tools: ["Oscilloscope", "Vehicle test bench", "Filter prototyping"],
+    toolsTitle: "Tools & equipment",
+    tools: [
+      "Tektronix DPO4054 oscilloscope",
+      "KiCad",
+      "BMS diagnostic logs",
+      "Soldering and rework equipment",
+      "Accumulator test setup",
+      "Vehicle high-voltage system",
+      "RS-485 filter prototypes",
+    ],
   },
   {
     slug: "bearingsolver",
