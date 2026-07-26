@@ -45,33 +45,21 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
     notFound();
   }
 
-  const usesApproachDesign = Boolean(project.approach);
-
   return (
     <main className="relative min-h-screen overflow-hidden bg-[#05070a] text-slate-100">
-      {usesApproachDesign ? (
-        <>
-          <Image
-            src="/hero-pcb-background.jpeg"
-            alt=""
-            width={1920}
-            height={1080}
-            aria-hidden="true"
-            className="pointer-events-none fixed inset-0 z-0 h-screen w-screen object-cover opacity-80"
-            sizes="100vw"
-          />
-          <div className="pointer-events-none fixed inset-0 z-0 bg-[#05070a]/35" />
-          <div className="pointer-events-none fixed inset-0 z-0 bg-gradient-to-r from-[#05070a]/90 via-[#05070a]/55 to-[#05070a]/20" />
-        </>
-      ) : null}
+      <Image
+        src="/hero-pcb-background.jpeg"
+        alt=""
+        width={1920}
+        height={1080}
+        aria-hidden="true"
+        className="pointer-events-none fixed inset-0 z-0 h-screen w-screen object-cover opacity-80"
+        sizes="100vw"
+      />
+      <div className="pointer-events-none fixed inset-0 z-0 bg-[#05070a]/35" />
+      <div className="pointer-events-none fixed inset-0 z-0 bg-gradient-to-r from-[#05070a]/90 via-[#05070a]/55 to-[#05070a]/20" />
 
-      <header
-        className={`relative z-30 border-b border-white/10 ${
-          usesApproachDesign
-            ? "bg-[linear-gradient(180deg,#071225_0%,#050b18_100%)] shadow-[inset_0_-18px_35px_rgba(0,0,0,0.18)] backdrop-blur"
-            : "bg-[#05070a]/95"
-        }`}
-      >
+      <header className="relative z-30 border-b border-white/10 bg-[linear-gradient(180deg,#071225_0%,#050b18_100%)] shadow-[inset_0_-18px_35px_rgba(0,0,0,0.18)] backdrop-blur">
         <nav className="mx-auto flex max-w-6xl items-center justify-between px-5 py-4">
           <Link href="/" className="text-sm font-semibold text-cyan-200">
             Lucas Frery
@@ -86,16 +74,7 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
       </header>
 
       <section className="relative z-10 border-b border-white/10 px-5 py-14 sm:py-18">
-        {!usesApproachDesign ? (
-          <div className="absolute inset-0 opacity-20 circuit-grid" />
-        ) : null}
-        <div
-          className={`relative mx-auto max-w-6xl ${
-            usesApproachDesign
-              ? ""
-              : "grid gap-10 lg:grid-cols-[1fr_0.9fr] lg:items-center"
-          }`}
-        >
+        <div className="relative mx-auto max-w-6xl">
           <div>
             <p className="text-sm font-semibold uppercase text-cyan-300">
               {project.category}
@@ -106,7 +85,7 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
             <p
               className={`mt-5 text-lg leading-8 text-slate-300 ${
                 project.summaryFullWidth ? "max-w-none" : "max-w-3xl"
-              } ${usesApproachDesign ? "sm:text-justify" : ""}`}
+              } sm:text-justify`}
             >
               {project.summary}
             </p>
@@ -145,106 +124,30 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
             </div>
           </div>
 
-          {!usesApproachDesign ? (
-            <div className="overflow-hidden rounded-lg border border-cyan-300/20 bg-white/[0.03] shadow-2xl shadow-cyan-950/30">
-              <Image
-                src={project.image}
-                alt={`${project.shortTitle} portfolio page`}
-                width={2880}
-                height={1620}
-                className="h-auto w-full"
-                sizes="(max-width: 1024px) 100vw, 45vw"
-              />
-            </div>
-          ) : null}
         </div>
       </section>
 
-      {project.approach ? (
-        <ProjectApproach
-          approach={project.approach}
-          technologies={project.technologies}
-          tools={project.tools}
-          toolsTitle={project.toolsTitle}
-        />
-      ) : (
-        <section className="relative z-10 px-5 py-14">
-          <div className="mx-auto grid max-w-6xl gap-8 lg:grid-cols-[0.75fr_1.25fr]">
-            <aside className="space-y-5">
-              <InfoCard title="Technologies" items={project.technologies} />
-              <InfoCard
-                title={project.toolsTitle ?? "Tools"}
-                items={project.tools}
-              />
-            </aside>
+      <ProjectApproach
+        approach={project.approach}
+        technologies={project.technologies}
+        tools={project.tools}
+        toolsTitle={project.toolsTitle}
+      />
 
-            <article className="space-y-8">
-              <ProjectSection title="Context">
-                <p>{project.context}</p>
-              </ProjectSection>
-
-              <ProjectSection title="My Role">
-                <p>{project.roleDescription}</p>
-              </ProjectSection>
-
-              <ProjectSection title="Implementation">
-                <Bullets items={project.implementation} />
-              </ProjectSection>
-
-              <ProjectSection title="Proof and Scale">
-                <Bullets items={project.proof} />
-              </ProjectSection>
-
-              <ProjectSection title="Results">
-                <Bullets items={project.results} />
-              </ProjectSection>
-
-              {project.nextSteps ? (
-                <ProjectSection title="Current Next Steps">
-                  <Bullets items={project.nextSteps} />
-                </ProjectSection>
-              ) : null}
-            </article>
-          </div>
-        </section>
-      )}
-
-      {!usesApproachDesign ? (
-        <section className="relative z-10 border-t border-white/10 px-5 py-14">
-          <div className="mx-auto max-w-6xl">
-            <p className="text-sm font-semibold uppercase text-cyan-300">
-              Original portfolio page
-            </p>
-            <div className="mt-5 overflow-hidden rounded-lg border border-white/10 bg-white/[0.03]">
-              <Image
-                src={project.image}
-                alt={`${project.shortTitle} original portfolio layout`}
-                width={2880}
-                height={1620}
-                className="h-auto w-full"
-                sizes="100vw"
-              />
-            </div>
-          </div>
-        </section>
-      ) : null}
-
-      {usesApproachDesign ? (
-        <footer className="relative z-10 border-t border-white/10 bg-[linear-gradient(180deg,#071225_0%,#050b18_100%)] px-5 py-6 shadow-[inset_0_18px_35px_rgba(0,0,0,0.18)]">
-          <div className="mx-auto grid max-w-7xl gap-3 text-sm text-slate-300 sm:grid-cols-3 sm:items-center">
-            <p className="sm:justify-self-start">
-              &copy; 2026 Lucas Frery. All rights reserved.
-            </p>
-            <Link
-              href="/privacy-policy"
-              className="font-semibold text-cyan-300 transition hover:text-cyan-200 sm:justify-self-center"
-            >
-              Privacy Policy
-            </Link>
-            <span aria-hidden="true" className="hidden sm:block" />
-          </div>
-        </footer>
-      ) : null}
+      <footer className="relative z-10 border-t border-white/10 bg-[linear-gradient(180deg,#071225_0%,#050b18_100%)] px-5 py-6 shadow-[inset_0_18px_35px_rgba(0,0,0,0.18)]">
+        <div className="mx-auto grid max-w-7xl gap-3 text-sm text-slate-300 sm:grid-cols-3 sm:items-center">
+          <p className="sm:justify-self-start">
+            &copy; 2026 Lucas Frery. All rights reserved.
+          </p>
+          <Link
+            href="/privacy-policy"
+            className="font-semibold text-cyan-300 transition hover:text-cyan-200 sm:justify-self-center"
+          >
+            Privacy Policy
+          </Link>
+          <span aria-hidden="true" className="hidden sm:block" />
+        </div>
+      </footer>
     </main>
   );
 }
@@ -528,21 +431,6 @@ function InfoCard({ title, items }: { title: string; items: string[] }) {
         ))}
       </div>
     </div>
-  );
-}
-
-function ProjectSection({
-  title,
-  children,
-}: {
-  title: string;
-  children: React.ReactNode;
-}) {
-  return (
-    <section className="rounded-lg border border-white/10 bg-white/[0.03] p-5 sm:p-6">
-      <h2 className="text-2xl font-semibold text-white">{title}</h2>
-      <div className="mt-4 leading-8 text-slate-300">{children}</div>
-    </section>
   );
 }
 

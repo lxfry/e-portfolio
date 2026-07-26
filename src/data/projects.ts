@@ -17,16 +17,10 @@ export type Project = {
   summary: string;
   summaryFullWidth?: boolean;
   homepageProof: string[];
-  context: string;
-  roleDescription: string;
-  implementation: string[];
-  proof: string[];
-  results: string[];
   technologies: string[];
   tools: string[];
   toolsTitle?: string;
-  nextSteps?: string[];
-  approach?: {
+  approach: {
     problem: {
       paragraphs: string[];
       requirements: string[];
@@ -318,31 +312,6 @@ export const projects: Project[] = [
       "66 analog and 116 digital and power I/O channels",
       "12 V and 24 V-compatible architecture with automotive interfaces",
     ],
-    context:
-      "Automotive ECUs need Hardware-in-the-Loop validation to test analog I/O, digital I/O, communication interfaces, timing behavior and fault responses before vehicle-level integration. Commercial HiL systems are powerful but expensive, so the objective is to create a compact internal Simulation Control Unit that can reproduce the I/O behavior needed for ECU validation at lower cost.",
-    roleDescription:
-      "I am responsible for the compact HiL development from scratch: requirements definition, architecture, schematic design, component choice, MCU pin assignment, validation planning and early experimental tests. This is an individual end-to-end hardware electronics project.",
-    implementation: [
-      "Defined the functional and electrical requirements: channel count, voltage levels, interface needs, protection strategy, validation constraints and cost direction.",
-      "Architected a dual-STM32F407ZGT7 hardware platform with inter-MCU SPI communication specified up to 42 Mbit/s.",
-      "Designed 12 V and 24 V-compatible I/O circuitry covering 66 analog channels and 116 digital and power I/O channels, including voltage scaling, filtering, ESD protection and driver stages.",
-      "Planned PWM generation and measurement capability across 44 channels up to 2 kHz, including 14 PWM inputs and 30 PWM outputs, using STM32 timer allocation analysis before committing to PCB layout.",
-      "Integrated automotive and embedded communication interfaces: 2 CAN, 2 LIN, Ethernet, SPI and I²C, with associated transceivers and support circuitry.",
-      "Built the schematic architecture in Altium Designer using reusable schematic blocks, multi-channel blocks, hierarchical sheets, harnesses and bus structures.",
-      "Performed MCU pin assignment in STM32CubeMX and started model-based firmware experiments with MATLAB/Simulink, STM32 Microcontroller Blockset and Embedded Coder.",
-      "Started hardware-level validation using an STM32F407G-DISC1 evaluation board, oscilloscope and frequency generator.",
-    ],
-    proof: [
-      "Complete SCU hardware architecture defined.",
-      "Schematic design and main component selection validated at draft stage.",
-      "Preliminary BOM and cost model prepared for a cost-effective internal HiL platform.",
-      "Experimental validation is ongoing to reduce risk before PCB layout and hardware bring-up.",
-    ],
-    results: [
-      "The project has progressed from concept to complete schematic-level architecture.",
-      "Component choices and MCU pin allocation have been validated enough to begin targeted hardware tests.",
-      "The current focus is de-risking timer allocation, PWM generation and PWM measurement before the final PCB layout phase.",
-    ],
     technologies: [
       "STM32",
       "CAN / CAN FD",
@@ -371,11 +340,6 @@ export const projects: Project[] = [
       "Oscilloscope",
       "Frequency generator",
       "STM32F407G-DISC1",
-    ],
-    nextSteps: [
-      "Finish experimental validation of PWM generation and measurement.",
-      "Freeze schematic revisions before PCB layout.",
-      "Move toward PCB layout, bring-up, firmware validation and ECU simulation test scenarios.",
     ],
   },
   {
@@ -856,27 +820,6 @@ export const projects: Project[] = [
       "50 tests traced to FSG 2025 requirements",
       "Fail-safe shutdown validated with HV active",
     ],
-    context:
-      "Formula Student electric vehicles require a Brake System Plausibility Device to monitor brake pressure and motor torque demand. If the driver brakes while torque demand remains implausibly high, the board must safely disable the tractive system.",
-    roleDescription:
-      "I had end-to-end responsibility for the BSPD PCBA: circuit understanding, analog simulation, schematic design, PCB layout, validation test planning and vehicle integration.",
-    implementation: [
-      "Recreated the complete BSPD circuit in LTspice using real component models.",
-      "Simulated analog brake pressure and current sensor inputs to evaluate comparator thresholds, output behavior and safety logic.",
-      "Designed the complete schematic and PCB layout, including signal conditioning, comparators and shutdown logic.",
-      "Prepared and executed a structured validation test plan aligned with Formula Student Germany 2025 technical regulation expectations.",
-      "Integrated the validated PCBA into the race car low-voltage system and verified tractive system shutdown behavior.",
-    ],
-    proof: [
-      "The board was simulated before manufacturing to reduce design risk.",
-      "The validation plan covered expected safety behavior and fault scenarios.",
-      "The PCBA passed safety checks and was integrated into the vehicle electrical system.",
-    ],
-    results: [
-      "The BSPD board was validated and successfully integrated into the vehicle low-voltage system.",
-      "The design ensured reliable tractive system shutdown under all tested fault scenarios.",
-      "The project demonstrates PCB design discipline for safety-critical automotive-style functions.",
-    ],
     technologies: [
       "Safety-critical analog electronics",
       "Analog signal conditioning",
@@ -1133,27 +1076,6 @@ export const projects: Project[] = [
       "RC filter tuned to attenuate EMI while preserving RS-485 signal integrity",
       "BMS data maintained with no communication-related AIR opening during validation",
     ],
-    context:
-      "During high-voltage power delivery, EMI disrupted the RS-485 BMS link, interrupted battery sensor data, and caused the vehicle safety system to open the AIRs.",
-    roleDescription:
-      "I reproduced the failure, measured and correlated the interference, developed the RC mitigation, implemented the hardware changes, and validated the corrected system under high-voltage operation.",
-    implementation: [
-      "Reproduced the RS-485 communication loss during high-voltage power delivery.",
-      "Measured both communication conductors and correlated a 25 kHz disturbance with the inverter IGBT switching frequency.",
-      "Designed and tuned a passive RC network while monitoring waveform quality and BMS logs.",
-      "Implemented the filter and improved grounding and shielding inside the accumulator.",
-      "Repeated the operating sequence and confirmed reliable communication and AIR behavior.",
-    ],
-    proof: [
-      "The diagnosis combined oscilloscope captures, BMS logs, and repeatable HV operating events.",
-      "The correction targeted the measured interference while preserving the communication waveform.",
-      "The final behavior was verified using the same conditions that reproduced the original failure.",
-    ],
-    results: [
-      "Reliable RS-485 communication was restored under the tested HV operating conditions.",
-      "BMS voltage, temperature, and current data remained available.",
-      "Communication-related AIR openings were eliminated during validation.",
-    ],
     technologies: [
       "RS-485 physical-layer diagnostics",
       "Battery management systems (BMS)",
@@ -1394,27 +1316,6 @@ export const projects: Project[] = [
       "Selected calculations reduced from 5–10 hours to approximately 20 ms",
       "Complete bearing-analysis workflow delivered as a standalone Scilab application",
       "Model precision established through multi-source validation and a 200-page validation note",
-    ],
-    context:
-      "Bearing sizing required a faster, transparent alternative to repeated manual calculations and opaque commercial workflows.",
-    roleDescription:
-      "I researched, modeled, programmed, validated, and documented a Scilab application for deep-groove ball bearing analysis.",
-    implementation: [
-      "Defined the engineering requirements and planned the work from research through validation.",
-      "Built bearing models from Hertzian theory, ISO 281, Harris references, and nonlinear equilibrium methods.",
-      "Developed the Scilab GUI, case management, result visualisations, and model-validity safeguards.",
-      "Validated results against SKF SimPro, NASA publications, reference literature, standards, and test evidence.",
-      "Documented the models, validation cases, error margins, and user workflow.",
-    ],
-    proof: [
-      "The project produced a functional application rather than a one-off calculation workbook.",
-      "Independent comparison paths established known validation margins for the implemented models.",
-      "Technical, validation, and user documentation made the calculations traceable and reusable.",
-    ],
-    results: [
-      "Delivered a reusable internal bearing-analysis application with complete outputs in under three seconds.",
-      "Reduced selected calculations from hours of manual work to millisecond-scale execution.",
-      "Made model assumptions, limitations, and validation evidence visible to the engineering team.",
     ],
     technologies: [
       "Deep-groove ball bearing mechanics",
