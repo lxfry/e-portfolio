@@ -41,7 +41,7 @@ const experience = [
   },
   {
     title: "Hardware / Embedded Systems Engineer",
-    company: "ESTACARS - Formula Student",
+    company: "ESTACARS Formula Student - France",
     period: "September 2023 - January 2026",
     text: "Designed and validated safety-critical PCBAs, diagnosed EMI issues, supported powertrain commissioning and performed system-level vehicle integration.",
   },
@@ -242,10 +242,12 @@ export default function Home() {
                   {project.homepageImages ? (
                     <div
                       className={`grid h-full grid-rows-[0.75fr_1.25fr] gap-1 bg-slate-950 ${
-                        project.homepageImageLayout === "wide-left"
-                          ? "grid-cols-[1.8fr_1fr]"
-                          : "grid-cols-[0.9fr_1.4fr]"
-                      }`}
+                  project.homepageImageLayout === "wide-left"
+                    ? "grid-cols-[1.8fr_1fr]"
+                    : project.homepageImageLayout === "portrait-left"
+                    ? "grid-cols-2"
+                    : "grid-cols-[0.9fr_1.4fr]"
+                }`}
                     >
                       {project.homepageImages.map((image, imageIndex) => (
                         <div
@@ -286,6 +288,25 @@ export default function Home() {
                     {project.homepageCompany ?? project.company} |{" "}
                     {project.period}
                   </p>
+                  {project.slug === "simulation-control-unit" ? (
+                    <p className="mt-3 inline-flex items-center gap-2 text-sm font-semibold tracking-wide text-orange-300">
+                      <span
+                        aria-hidden="true"
+                        className="h-2 w-2 rounded-full bg-orange-400"
+                      />
+                      IN PROGRESS
+                    </p>
+                  ) : project.slug === "bspd-safety-critical-pcb" ||
+                    project.slug === "rs485-emi-diagnosis" ||
+                    project.slug === "bearingsolver" ? (
+                    <p className="mt-3 inline-flex items-center gap-2 text-sm font-semibold tracking-wide text-emerald-300">
+                      <span
+                        aria-hidden="true"
+                        className="h-2 w-2 rounded-full bg-emerald-400"
+                      />
+                      VALIDATED
+                    </p>
+                  ) : null}
                   <h3 className="mt-3 text-2xl font-semibold text-white">
                     {project.shortTitle}
                   </h3>

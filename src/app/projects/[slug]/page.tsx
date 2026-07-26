@@ -110,17 +110,38 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
             >
               {project.summary}
             </p>
+            {project.slug === "bspd-safety-critical-pcb" ||
+            project.slug === "rs485-emi-diagnosis" ||
+            project.slug === "bearingsolver" ? (
+              <p className="mt-5 inline-flex items-center gap-2 text-sm font-semibold tracking-wide text-emerald-300">
+                <span
+                  aria-hidden="true"
+                  className="h-2 w-2 rounded-full bg-emerald-400"
+                />
+                VALIDATED
+              </p>
+            ) : null}
+            {project.slug === "simulation-control-unit" ? (
+              <p className="mt-5 inline-flex items-center gap-2 text-sm font-semibold tracking-wide text-orange-300">
+                <span
+                  aria-hidden="true"
+                  className="h-2 w-2 rounded-full bg-orange-400"
+                />
+                IN PROGRESS
+              </p>
+            ) : null}
             <div className="mt-7 grid gap-3 text-sm text-slate-300 sm:grid-cols-3">
+              <Fact label="Role" value={project.role} />
               <Fact
                 label={
-                  project.slug === "bspd-safety-critical-pcb"
+                  project.slug === "bspd-safety-critical-pcb" ||
+                  project.slug === "rs485-emi-diagnosis"
                     ? "Project"
                     : "Company"
                 }
                 value={project.company}
               />
               <Fact label="Period" value={project.period} />
-              <Fact label="Role" value={project.role} />
             </div>
           </div>
 
@@ -386,18 +407,27 @@ function ApproachBlock({
 }
 
 function MethodImages({ images }: { images: MethodImage[] }) {
+  const usesEqualHeight = images.every(
+    (image) => image.fit === "equal-height",
+  );
+  const usesCenteredThreeImageLayout =
+    images.length === 3 && usesEqualHeight;
+
   return (
     <div
       className={`mx-auto mt-6 grid items-center gap-4 ${
-        images.length === 3
+        usesCenteredThreeImageLayout
+          ? "max-w-5xl items-start sm:grid-cols-2"
+          : images.length === 3
           ? "max-w-5xl items-start sm:grid-cols-[minmax(0,0.4fr)_minmax(0,1fr)]"
-          : images.length > 1 &&
-            images.every((image) => image.fit === "equal-height")
+          : images.length > 1 && usesEqualHeight
           ? "max-w-5xl lg:grid-cols-[repeat(2,max-content)] lg:items-start lg:justify-center"
           : images.length > 1
           ? "max-w-5xl sm:grid-cols-2"
           : images[0].displayWidth === "wide"
           ? "max-w-5xl sm:max-w-[75%]"
+          : images[0].displayWidth === "medium"
+          ? "max-w-5xl sm:max-w-[60%]"
           : "max-w-5xl sm:max-w-[50%]"
       }`}
     >
@@ -418,7 +448,11 @@ function MethodImages({ images }: { images: MethodImage[] }) {
               : undefined
           }
           className={`${
-            images.length === 3 && imageIndex === 0
+            usesCenteredThreeImageLayout && imageIndex === 2
+              ? "w-full justify-self-center sm:col-span-2 sm:w-[var(--equal-height-width)]"
+              : usesCenteredThreeImageLayout
+              ? "w-full justify-self-center sm:w-[var(--equal-height-width)]"
+              : images.length === 3 && imageIndex === 0
               ? "sm:row-span-2"
               : image.fit === "equal-height"
               ? "w-full justify-self-center lg:w-[var(--equal-height-width)]"
@@ -441,7 +475,9 @@ function MethodImages({ images }: { images: MethodImage[] }) {
               height={image.height}
               className={
                 image.fit === "equal-height"
-                  ? "h-auto w-full lg:h-[var(--equal-height-height)]"
+                  ? usesCenteredThreeImageLayout
+                    ? "h-auto w-full object-contain sm:h-[var(--equal-height-height)]"
+                    : "h-auto w-full lg:h-[var(--equal-height-height)]"
                   : images.length > 1 && images.length !== 3
                   ? `h-full w-full ${
                       image.fit === "cover" ? "object-cover" : "object-contain"

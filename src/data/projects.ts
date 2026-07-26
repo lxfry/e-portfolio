@@ -13,7 +13,7 @@ export type Project = {
     alt: string;
     fit?: "cover" | "contain";
   }[];
-  homepageImageLayout?: "wide-left";
+  homepageImageLayout?: "wide-left" | "portrait-left";
   summary: string;
   summaryFullWidth?: boolean;
   homepageProof: string[];
@@ -47,7 +47,7 @@ export type Project = {
           caption?: string;
           width: number;
           height: number;
-          displayWidth?: "default" | "wide";
+          displayWidth?: "default" | "medium" | "wide";
           displayHeightRem?: number;
           fit?: "contain" | "cover" | "equal-height";
         }[];
@@ -58,7 +58,7 @@ export type Project = {
         caption?: string;
         width: number;
         height: number;
-        displayWidth?: "default" | "wide";
+        displayWidth?: "default" | "medium" | "wide";
         displayHeightRem?: number;
         fit?: "contain" | "cover" | "equal-height";
       }[];
@@ -401,6 +401,7 @@ export const projects: Project[] = [
       {
         src: "/portfolio-pages/bspd/BSPD_driving_validation.png",
         alt: "Formula Student car driving during final BSPD validation",
+        fit: "cover",
       },
     ],
     homepageImageLayout: "wide-left",
@@ -905,16 +906,33 @@ export const projects: Project[] = [
   },
   {
     slug: "rs485-emi-diagnosis",
-    title: "Diagnosis and Mitigation of EMI on RS-485 BMS Communication",
+    title: "Resolving EMI on an RS-485 BMS Link",
     shortTitle: "RS-485 EMI Diagnosis",
-    company: "ESTACARS - Formula Student",
+    company: "ESTACARS Formula Student - France",
     homepageCompany: "ESTACARS Formula Student (France)",
-    period: "September 2023 - January 2026",
-    role: "Hardware / Embedded Systems Engineer",
-    category: "EMI debugging and vehicle integration",
+    period: "September 2023 – January 2026",
+    role: "Hardware & Embedded Systems Engineer",
+    category: "EMI Diagnosis · Vehicle Integration",
     image: "/portfolio-pages/rs485-emi-diagnosis.png",
+    homepageImages: [
+      {
+        src: "/portfolio-pages/emi/diagnostic-session.jpg",
+        alt: "Engineer diagnosing the RS-485 communication with an oscilloscope and BMS logs",
+      },
+      {
+        src: "/portfolio-pages/emi/disturbed-rs485-waveform.jpg",
+        alt: "Oscilloscope capture showing transient interference on the RS-485 conductors",
+        fit: "cover",
+      },
+      {
+        src: "/portfolio-pages/emi/filter-hardware-implementation.jpg",
+        alt: "Engineer soldering the RC filter inside the accumulator",
+        fit: "cover",
+      },
+    ],
+    homepageImageLayout: "wide-left",
     summary:
-      "Measurement-led diagnosis and hardware mitigation of EMI-induced RS-485 BMS communication loss during high-voltage power delivery.",
+      "Oscilloscope-led diagnosis of inverter-induced interference, followed by hardware changes that restored reliable communication during high-voltage operation.",
     summaryFullWidth: true,
     approach: {
       problem: {
@@ -932,7 +950,7 @@ export const projects: Project[] = [
       },
       solution: {
         paragraphs: [
-          "I instrumented the RS-485 link with a Tektronix DPO4054 oscilloscope while monitoring the BMS diagnostic logs and repeatedly operating the high-voltage system. The disturbed captures contained repetitive high-frequency spikes at approximately 71.1 kHz. Their appearance during power delivery and consistency with the inverter switching behavior strongly indicated EMI coupling from the powertrain into the communication path.",
+          "I instrumented the RS-485 link with a Tektronix DPO4054 oscilloscope while monitoring the BMS diagnostic logs and repeatedly operating the high-voltage system. The disturbed captures contained repetitive high-frequency spikes at approximately 25 kHz. Their appearance during power delivery and correspondence with the inverter IGBT switching frequency strongly indicated EMI coupling from the powertrain into the communication path.",
           "I developed a passive RC filtering solution for the RS-485 path and tuned it experimentally. Each iteration balanced high-frequency attenuation against differential-signal amplitude, transition time, and reliable frame reception. I also reviewed the grounding and shielding arrangement to reduce the available coupling paths.",
           "After implementing the selected filter network in the accumulator wiring, I repeated the same high-voltage operating sequence. The filtered waveform retained clearly distinguishable communication states, BMS sensor messages remained available, and communication loss no longer triggered unintended AIR opening during the tested conditions.",
         ],
@@ -946,17 +964,17 @@ export const projects: Project[] = [
       },
       method: [
         {
-          title: "Step 1 - Reproduce and bound the HV-dependent failure",
+          title: "Step 1 — Reproduce and isolate the HV-dependent failure",
           paragraphs: [
-            "I first reproduced the problem with the accumulator, BMS, and communication wiring installed in their operating configuration. The RS-485 network remained functional before high-voltage power delivery, then lost BMS messages when the powertrain became active. This bounded the fault to an interaction with the energized HV system rather than a permanent communication or software defect.",
-            "The failure criterion combined electrical and functional evidence: missing voltage, temperature, and current messages in the BMS logs, followed by the safety system opening the AIRs because valid battery data was no longer available.",
+            "I reproduced the fault with the accumulator, BMS, and RS-485 wiring installed in their operating configuration. Communication remained stable before power delivery, but valid BMS messages were lost when the powertrain became active. Repeating the operating sequence produced the same behavior, establishing a clear relationship between powertrain operation and the communication failure.",
+            "The failure was identified through a consistent event chain: voltage, temperature, and current messages stopped arriving, the diagnostic logs reported lost BMS communication, and the safety system opened the AIRs because valid battery data was no longer available. This made a permanent protocol or software defect less likely and provided a repeatable test condition for the physical-layer measurements performed in Step 2.",
           ],
           images: [
             {
               src: "/portfolio-pages/emi/accumulator-bms-test-setup.jpg",
               alt: "Formula Student accumulator and BMS wiring configured for EMI reproduction tests",
               caption:
-                "Accumulator, BMS, and communication wiring configured for controlled reproduction of the HV-dependent fault.",
+                "Accumulator and BMS test configuration used to reproduce the RS-485 communication loss during powertrain operation.",
               width: 1024,
               height: 768,
               displayWidth: "wide",
@@ -964,45 +982,46 @@ export const projects: Project[] = [
             },
           ],
           details: [
-            "Confirmed that communication loss appeared specifically during high-voltage power delivery.",
-            "Used both missing BMS data and AIR opening as functional failure indicators.",
+            "Reproduced the same communication failure across repeated powertrain operating sequences.",
+            "Tracked the failure from missing BMS sensor messages to diagnostic errors and the resulting AIR opening.",
           ],
         },
         {
-          title: "Step 2 - Measure and correlate the RS-485 disturbance",
+          title: "Step 2 — Measure and correlate the interference signature",
           paragraphs: [
-            "I monitored both conductors of the RS-485 pair with the oscilloscope while the laptop recorded the BMS communication behavior. This allowed the physical-layer disturbance, software error messages, and high-voltage operating state to be compared during the same event.",
-            "The captures showed repetitive spike trains superimposed on the communication levels. Their repetition frequency was measured at approximately 71.1 kHz and was consistent with the inverter IGBT switching behavior. The correlation strongly supported a hardware EMI mechanism rather than an independent application-layer fault.",
+            "I monitored both conductors of the RS-485 pair with a Tektronix DPO4054 oscilloscope while recording BMS diagnostic messages and repeating the powertrain operating sequence established in Step 1. This allowed the conductor voltages, communication errors, and inverter operating state to be compared during the same failure event.",
+            "The captures showed fast transient spikes recurring at approximately 25 kHz while the inverter was operating. This repetition rate matched the inverter IGBT switching frequency, and the disturbance appeared during the same events as the loss of BMS messages. The combined electrical and functional evidence identified inverter-generated EMI as the likely source of the RS-485 communication failure, rather than an independent application-layer fault.",
           ],
           images: [
             {
               src: "/portfolio-pages/emi/disturbed-rs485-waveform.jpg",
               alt: "Oscilloscope capture of the RS-485 pair disturbed by repetitive high-frequency spikes",
               caption:
-                "Disturbed RS-485 conductors with repetitive interference measured at approximately 71.1 kHz.",
+                "Repetitive transient interference on the RS-485 conductors, recurring at approximately 25 kHz during inverter operation.",
               width: 768,
               height: 1024,
-              displayWidth: "wide",
+              displayWidth: "medium",
               fit: "contain",
             },
           ],
           details: [
-            "Captured the electrical disturbance under the same conditions that produced communication loss.",
-            "Correlated the measured interference frequency with inverter operation.",
+            "Captured transient interference on both RS-485 conductors during communication loss.",
+            "Measured an approximately 25 kHz repetition rate matching the inverter IGBT switching frequency.",
+            "Correlated the physical-layer disturbance with BMS communication errors.",
           ],
         },
         {
-          title: "Step 3 - Design and tune the passive mitigation",
+          title: "Step 3 — Design and tune the RS-485 filter",
           paragraphs: [
-            "Based on the measured frequency content, I designed a first-order RC network for the RS-485 communication path. The objective was to attenuate the high-frequency spikes while preserving sufficient differential amplitude, transition speed, and timing margin for reliable frame detection.",
-            "The component values were tuned iteratively rather than selected from frequency alone. After each change, I compared the waveform and BMS logs to verify that interference was reduced without filtering the communication edges excessively. The grounding and shielding arrangement was reviewed in parallel because filtering alone would not remove the underlying coupling paths.",
+            "Based on the measured transient waveform and its effect on the RS-485 communication levels, I developed a first-order RC filter to attenuate the interference. The design had to reduce the transient amplitude while preserving sufficient differential voltage, transition speed, and timing margin for reliable frame detection.",
+            "I evaluated candidate component values under the same inverter operating conditions used during diagnosis. After each iteration, I compared the conductor waveforms, BMS messages, and diagnostic errors to determine whether the interference was reduced without excessively degrading the communication signal. In parallel, I reviewed the grounding and shielding arrangement to reduce the coupling paths rather than relying on filtering alone.",
           ],
           images: [
             {
               src: "/portfolio-pages/emi/rs485-rc-filter-schematic.png",
               alt: "Schematic of the RC network added to the RS-485 communication path",
               caption:
-                "Implemented RC network used to attenuate high-frequency interference on the RS-485 path.",
+                "First-order RC filter developed to reduce transient interference while preserving the RS-485 communication waveform.",
               width: 1080,
               height: 720,
               displayWidth: "wide",
@@ -1010,101 +1029,109 @@ export const projects: Project[] = [
             },
           ],
           details: [
-            "Balanced noise suppression against RS-485 signal integrity.",
-            "Evaluated grounding and shielding together with the passive filter.",
+            "Evaluated candidate RC values under the same inverter operating conditions used during diagnosis.",
+            "Balanced transient attenuation against differential amplitude and edge timing.",
+            "Verified each iteration using oscilloscope captures and BMS diagnostic messages.",
+            "Reviewed grounding and shielding to reduce the underlying interference-coupling paths.",
           ],
         },
         {
-          title: "Step 4 - Implement the filter in the accumulator",
+          title: "Step 4 — Integrate the filter into the accumulator",
           paragraphs: [
-            "Once the filter values were selected, I implemented the network directly in the accumulator communication wiring. The components and connections were soldered, mechanically secured, and inspected while keeping the added lead lengths short.",
-            "I also improved the local grounding and shielding arrangement to reduce interference coupling into the communication path. The complete installation was then prepared for validation under the same operating conditions used to reproduce the original fault.",
+            "I integrated the selected RC network into the accumulator communication wiring while keeping the added conductor lengths short to limit parasitic effects and additional interference pickup. The connections were soldered, mechanically secured, and visually inspected before the system was energized.",
+            "I also reviewed and adjusted the local grounding and shielding arrangement to reduce interference coupling into the communication path. After inspection, the completed installation was prepared for validation using the same powertrain operating sequence and measurement points established during diagnosis.",
           ],
           images: [
             {
               src: "/portfolio-pages/emi/filter-hardware-implementation.jpg",
               alt: "Hardware rework implementing the RS-485 filter inside the accumulator",
               caption:
-                "Implementation and inspection of the selected RS-485 mitigation inside the accumulator.",
+                "Installed RC filter inside the accumulator before high-voltage validation.",
               width: 768,
               height: 1024,
               fit: "contain",
             },
           ],
           details: [
-            "Installed the tuned RC network in the real communication path.",
-            "Improved the physical grounding and shielding configuration.",
+            "Integrated the selected RC network into the accumulator communication wiring.",
+            "Kept added conductor lengths short and mechanically secured the installation.",
+            "Reviewed the completed hardware before high-voltage validation.",
+            "Prepared the system for testing under the original failure conditions.",
           ],
         },
         {
-          title: "Step 5 - Validate signal integrity and system behavior",
+          title: "Step 5 — Validate electrical and system-level performance",
           paragraphs: [
-            "I repeated the high-voltage operating sequence with the same oscilloscope points and BMS monitoring used during diagnosis. The post-mitigation capture showed that the repetitive spike bursts were strongly reduced while the two communication states remained clearly distinguishable.",
-            "The electrical improvement was confirmed at system level: BMS voltage, temperature, and current messages remained available, the diagnostic error messages disappeared, and communication loss no longer caused unintended AIR opening during the tested operating conditions.",
+            "I repeated the original powertrain operating sequence using the same oscilloscope connection points and BMS monitoring established during diagnosis. Comparing the pre- and post-mitigation captures showed that the repetitive transient bursts were substantially attenuated while the RS-485 communication levels remained clearly distinguishable.",
+            "The improvement was then confirmed at system level throughout the tested sequence: BMS voltage, temperature, and current messages remained available, the diagnostic communication errors no longer appeared, and communication loss did not cause an unintended AIR opening.",
           ],
           images: [
             {
               src: "/portfolio-pages/emi/diagnostic-session.jpg",
               alt: "Engineer validating the filtered RS-485 communication with an oscilloscope and BMS logs",
               caption:
-                "Simultaneous oscilloscope and BMS-log validation after implementing the mitigation.",
+                "Concurrent oscilloscope and BMS-log monitoring during post-mitigation high-voltage validation.",
               width: 768,
               height: 1024,
-              displayHeightRem: 18,
+              displayHeightRem: 23.4,
               fit: "equal-height",
             },
             {
               src: "/portfolio-pages/emi/filtered-rs485-waveform.jpg",
               alt: "Oscilloscope capture of the RS-485 communication after filtering",
               caption:
-                "Post-mitigation waveform with the communication states preserved and interference reduced.",
+                "Post-mitigation RS-485 waveform showing reduced transient interference and preserved communication levels.",
               width: 1024,
               height: 768,
-              displayHeightRem: 18,
+              displayHeightRem: 23.4,
               fit: "equal-height",
             },
           ],
           details: [
-            "Repeated the original failure sequence for a direct before-and-after comparison.",
-            "Confirmed the correction through waveforms, diagnostic logs, sensor data, and AIR behavior.",
+            "Repeated the original failure conditions using the same measurement points.",
+            "Compared pre- and post-mitigation waveforms under equivalent operating conditions.",
+            "Confirmed that BMS sensor data remained available without communication errors.",
+            "Verified that no communication-related AIR opening occurred during the tested sequence.",
           ],
         },
       ],
       results: {
         paragraphs: [
-          "The implemented mitigation restored reliable RS-485 BMS communication throughout the tested high-voltage operating conditions. Battery sensor data remained available and communication loss no longer produced unintended AIR openings.",
+          "Under the same powertrain conditions used to reproduce the original fault, the installed RC filter substantially reduced the transient interference while preserving distinguishable RS-485 communication levels. BMS sensor data remained available, no communication errors were observed, and no communication-related AIR opening occurred during the validation sequence.",
         ],
-        completedTitle: "Key outcomes",
+        completedTitle: "Validated outcomes",
         completed: [
           {
-            title: "Root cause supported by measurement",
+            title: "Interference source identified",
             items: [
-              "Communication loss was reproduced specifically during high-voltage power delivery.",
-              "A repetitive disturbance near 71.1 kHz was correlated with inverter switching behavior.",
+              "Communication loss was repeatedly reproduced during powertrain operation.",
+              "Transient interference recurring at approximately 25 kHz matched the inverter IGBT switching frequency.",
+              "The physical-layer disturbance coincided with the loss of BMS messages.",
             ],
           },
           {
-            title: "Hardware mitigation implemented",
+            title: "Mitigation designed and integrated",
             items: [
-              "A first-order RC network was tuned and installed in the RS-485 path.",
-              "Grounding and shielding were improved to reduce interference coupling.",
+              "A first-order RC filter was tuned against interference attenuation and RS-485 signal integrity.",
+              "The selected filter was integrated into the accumulator communication wiring.",
+              "The grounding and shielding arrangement was reviewed and adjusted to reduce interference coupling.",
             ],
           },
           {
-            title: "Vehicle behavior restored",
+            title: "System behavior validated",
             items: [
-              "The filtered waveform preserved reliable RS-485 communication states.",
-              "BMS sensor data and diagnostic communication remained available.",
-              "No communication-related AIR opening occurred during the validation tests.",
+              "Post-mitigation captures showed substantially reduced transient interference.",
+              "RS-485 communication levels remained distinguishable and BMS sensor data remained available.",
+              "No communication errors or communication-related AIR openings occurred during the tested sequence.",
             ],
           },
         ],
       },
     },
     homepageProof: [
-      "Oscilloscope-based differential signal diagnosis",
-      "Noise matched to inverter IGBT switching frequency",
-      "Communication restored under operating conditions",
+      "25 kHz transient interference correlated with inverter IGBT switching",
+      "RC filter tuned to attenuate EMI while preserving RS-485 signal integrity",
+      "BMS data maintained with no communication-related AIR opening during validation",
     ],
     context:
       "During high-voltage power delivery, EMI disrupted the RS-485 BMS link, interrupted battery sensor data, and caused the vehicle safety system to open the AIRs.",
@@ -1112,7 +1139,7 @@ export const projects: Project[] = [
       "I reproduced the failure, measured and correlated the interference, developed the RC mitigation, implemented the hardware changes, and validated the corrected system under high-voltage operation.",
     implementation: [
       "Reproduced the RS-485 communication loss during high-voltage power delivery.",
-      "Measured both communication conductors and correlated a 71.1 kHz disturbance with inverter operation.",
+      "Measured both communication conductors and correlated a 25 kHz disturbance with the inverter IGBT switching frequency.",
       "Designed and tuned a passive RC network while monitoring waveform quality and BMS logs.",
       "Implemented the filter and improved grounding and shielding inside the accumulator.",
       "Repeated the operating sequence and confirmed reliable communication and AIR behavior.",
@@ -1128,74 +1155,291 @@ export const projects: Project[] = [
       "Communication-related AIR openings were eliminated during validation.",
     ],
     technologies: [
-      "Automotive RS-485 communication",
-      "BMS communication",
-      "EMC and EMI troubleshooting",
+      "RS-485 physical-layer diagnostics",
+      "Battery management systems (BMS)",
+      "Electromagnetic compatibility (EMC)",
+      "Inverter-induced EMI analysis",
       "Differential signal integrity",
-      "Passive RC filtering",
+      "First-order RC filter design",
       "Grounding and shielding",
-      "HV/LV system integration",
-      "Hardware fault isolation",
-      "Vehicle-level validation",
+      "High-voltage accumulator integration",
+      "Vehicle-level fault validation",
     ],
     toolsTitle: "Tools & equipment",
     tools: [
       "Tektronix DPO4054 oscilloscope",
-      "KiCad",
-      "BMS diagnostic logs",
+      "PuTTY serial terminal and BMS diagnostic logs",
+      "High-voltage accumulator test setup",
+      "Vehicle inverter and powertrain",
+      "KiCad schematic capture",
       "Soldering and rework equipment",
-      "Accumulator test setup",
-      "Vehicle high-voltage system",
-      "RS-485 filter prototypes",
+      "RC filter prototype hardware",
     ],
   },
   {
     slug: "bearingsolver",
-    title: "BearingSolver Engineering Modeling Tool",
+    title: "BearingSolver: Physics-Based Bearing Analysis",
     shortTitle: "BearingSolver",
-    company: "Involute Transmissions",
+    company: "Involute Transmissions - France",
     homepageCompany: "Involute Transmissions (France)",
-    period: "May 2025 - October 2025",
+    period: "May 2025 – September 2025",
     role: "R&D Engineer",
-    category: "Engineering software and modeling",
+    category: "Bearing Modeling · Engineering Software",
     image: "/portfolio-pages/bearingsolver.png",
+    homepageImages: [
+      {
+        src: "/portfolio-pages/bearingsolver/harris-bearing-reference.png",
+        alt: "Essential Concepts of Bearing Technology reference book by Harris and Kotzalas",
+        fit: "contain",
+      },
+      {
+        src: "/portfolio-pages/bearingsolver/gui-mechanical-results.png",
+        alt: "BearingSolver load cases and calculated mechanical results",
+        fit: "cover",
+      },
+      {
+        src: "/portfolio-pages/bearingsolver/bearing-equations.png",
+        alt: "Bearing geometry, contact-angle, and equilibrium equations",
+        fit: "contain",
+      },
+    ],
+    homepageImageLayout: "portrait-left",
     summary:
-      "Scilab-based engineering tool for bearing selection, lifetime prediction and performance trade-off analysis.",
+      "Scilab engineering tool for deep-groove ball bearing sizing, combining traceable physics models, a reusable GUI, and validated outputs in under three seconds.",
+    summaryFullWidth: true,
+    approach: {
+      problem: {
+        paragraphs: [
+          "Early bearing-sizing studies required repeated calculations of life, operating clearance, stiffness, contact pressure, and frictional losses across multiple operating conditions. A complete manual analysis could take approximately 5–10 hours and had to be repeated whenever the bearing geometry, material, fit, temperature, lubrication, or loading changed.",
+          "Commercial tools reduced calculation time but introduced license costs, complex workflows, and limited visibility into their equations, assumptions, and accuracy. Involute Transmissions therefore needed an internal engineering application that was fast and easy to use while keeping every model traceable and its validation margin known.",
+        ],
+        requirements: [
+          "Calculate bearing life, operating clearance, radial and axial response, contact pressure, frictional losses, and lubrication indicators.",
+          "Support multiple operating cases with axial, radial, and combined loads and prescribed misalignment.",
+          "Provide a Scilab GUI with study-file management, input checks, contextual help, and model-validity warnings.",
+          "Document every equation, assumption, symbol, applicability limit, and known model boundary.",
+          "Validate the implemented models against standards, literature, commercial software, and available physical-test evidence.",
+        ],
+      },
+      solution: {
+        paragraphs: [
+          "I developed BearingSolver as a modular Scilab application that consolidates the complete deep-groove ball bearing analysis workflow into one traceable engineering interface. Engineers can define bearing geometry and materials, create multiple operating cases, run the implemented models, compare performance, and save studies for later reuse.",
+          "The computational core combines documented bearing theory, standards-based calculations, and nonlinear numerical solving. Each result remains connected to known equations, assumptions, applicability limits, and validation evidence. Input controls, contextual help, detailed result views, and model-validity warnings help engineers interpret the outputs rather than treating every calculated value as automatically trustworthy.",
+        ],
+        features: [
+          "Study-file creation, saving, reopening, and comparison.",
+          "Bearing geometry, material, fit, temperature, lubrication, and multi-case load definition.",
+          "Life, damage, operating-clearance, viscosity-ratio, deformation, stiffness, contact-pressure, and frictional-loss calculations.",
+          "Result tables, load-distribution charts, contact-surface views, and operating-case comparisons.",
+          "Input verification, contextual help, detailed calculation views, and model-validity warnings.",
+        ],
+      },
+      method: [
+        {
+          title: "Step 1 — Establish the modeling foundation",
+          paragraphs: [
+            "Before programming, I identified the physical phenomena and outputs that BearingSolver had to model. I then conducted a structured literature review using SKF technical resources, British Gear Association training, the Harris bearing-analysis references, ISO 281:2007, and relevant scientific publications.",
+            "For each candidate model, I documented its required inputs, calculated outputs, assumptions, applicability limits, and available validation references. This established a traceable calculation chain covering bearing geometry, operating clearance, Hertzian contact behavior, load distribution, deformation, stiffness, life, lubrication indicators, and frictional losses. The resulting 65-page technical note became the implementation specification for the computational models.",
+          ],
+          images: [
+            {
+              src: "/portfolio-pages/bearingsolver/harris-bearing-reference.png",
+              alt: "Essential Concepts of Bearing Technology reference book by Harris and Kotzalas",
+              caption:
+                "Harris and Kotzalas reference used to establish the bearing-modeling foundation.",
+              width: 366,
+              height: 556,
+              displayHeightRem: 24,
+              fit: "equal-height",
+            },
+            {
+              src: "/portfolio-pages/bearingsolver/bearing-equations.png",
+              alt: "Bearing geometry, contact-angle, and equilibrium equations",
+              caption:
+                "Bearing geometry and equilibrium equations reviewed before implementation in Scilab.",
+              width: 742,
+              height: 647,
+              displayHeightRem: 24,
+              fit: "equal-height",
+            },
+          ],
+          details: [
+            "Defined the calculation chain from bearing geometry and operating conditions to mechanical performance.",
+            "Selected generalized Hertzian theory for contact behavior and ISO 281:2007 for bearing-life calculations.",
+            "Documented each model's inputs, outputs, assumptions, equations, and applicability limits.",
+            "Converted known model boundaries into requirements for software checks and user warnings.",
+          ],
+        },
+        {
+          title: "Step 2 — Translate theory into computational models",
+          paragraphs: [
+            "I converted the selected physical models into modular Scilab functions, progressing from bearing geometry and operating clearance to Hertzian contact, radial and axial response, combined loading, life, and frictional losses. Each function used defined engineering inputs and returned traceable outputs that could be reused by the interface and tested independently during validation.",
+            "Radial equilibrium was solved iteratively by adjusting bearing displacement until the forces generated by the loaded rolling elements balanced the applied load. Axial response used the Jones stiffness formulation and Scilab's nonlinear solver to determine contact angle and deformation. Combined loading required a coupled three-equation equilibrium system for axial, radial, and angular behavior.",
+            "I reformulated the coordinate system to make the internal kinematics easier to interpret and used prescribed misalignment as a practical engineering input. When the advanced ISO fatigue-limit formulation did not converge reliably, I retained the documented simplified method instead of delivering an unstable solver. The excluded capability and its consequences remained visible in the model documentation and interface warnings.",
+          ],
+          details: [
+            "Implemented modular functions for clearance, contact, deformation, stiffness, life, and frictional losses.",
+            "Used iterative equilibrium and nonlinear numerical solving for radial, axial, and combined-load response.",
+            "Standardized model inputs and outputs for reuse by the GUI and independent validation.",
+            "Documented numerical simplifications and exposed their applicability limits to users.",
+          ],
+        },
+        {
+          title: "Step 3 — Build the Engineering GUI",
+          paragraphs: [
+            "I transformed the computational models into a Scilab GUI organized around the engineer’s complete analysis sequence: define the bearing geometry and materials, create multiple operating cases, execute the calculations, inspect the results, and explore the detailed contact behavior.",
+            "Every field, control, and result panel was programmed and connected to the underlying calculation functions. The interface presents load distribution, deformation, stiffness, contact pressure, and validity information through structured tables and plots. Contextual help, input checks, and explicit warnings—such as identifying truncated contact surfaces—help users distinguish a numerical result from one that is valid for engineering use.",
+          ],
+          images: [
+            {
+              src: "/portfolio-pages/bearingsolver/gui-bearing-definition.png",
+              alt: "BearingSolver interface for bearing geometry and material definition",
+              caption:
+                "Bearing geometry and material definition for the rings and rolling elements.",
+              width: 940,
+              height: 515,
+              displayHeightRem: 15.5,
+              fit: "equal-height",
+            },
+            {
+              src: "/portfolio-pages/bearingsolver/gui-mechanical-results.png",
+              alt: "BearingSolver load cases and calculated mechanical results",
+              caption:
+                "Load cases, load distribution, calculated mechanical results, and contact-validity warning.",
+              width: 1116,
+              height: 544,
+              displayHeightRem: 15.5,
+              fit: "equal-height",
+            },
+            {
+              src: "/portfolio-pages/bearingsolver/gui-contact-surfaces.png",
+              alt: "BearingSolver visualization of individual contact surfaces",
+              caption:
+                "Individual contact-surface visualization across the inner and outer rings.",
+              width: 1137,
+              height: 550,
+              displayHeightRem: 15.5,
+              fit: "equal-height",
+            },
+          ],
+          details: [
+            "Structured the application around bearing definition, operating cases, calculation, and result review.",
+            "Connected standardized GUI inputs and outputs to the modular Scilab models.",
+            "Visualized load distribution, mechanical results, and individual contact surfaces.",
+            "Integrated input checks, contextual help, detailed views, and model-validity warnings.",
+            "Enabled study files to be saved and reopened for repeatable analysis.",
+          ],
+        },
+        {
+          title: "Step 4 — Validate the Models and Quantify Their Precision",
+          paragraphs: [
+            "I validated BearingSolver through a progressive chain of independent evidence. I first benchmarked the implemented calculations against SKF SimPro, then cross-checked their physical behavior and reference cases against NASA technical publications, Harris bearing-analysis examples, and the ISO 281 bearing-life standard. The final stage compared the model predictions with the available evidence from the company’s bearing test-bench process.",
+            "The test-bench results were not used to calibrate or correct the computational models. Instead, I recorded every validation test, its reference conditions, its results, and the observed differences in a 200-page validation note covering the complete campaign. This body of evidence allowed me to quantify the precision of each model and make its expected accuracy traceable to the engineering team. A separate user guide documented the complete application workflow.",
+          ],
+          images: [
+            {
+              src: "/portfolio-pages/bearingsolver/validation-workflow.png",
+              alt: "BearingSolver validation workflow from SKF SimPro and NASA comparisons to bearing test-bench validation",
+              caption:
+                "Progressive validation using commercial software, scientific publications, and test-bench evidence.",
+              width: 1319,
+              height: 121,
+              displayWidth: "wide",
+              fit: "contain",
+            },
+          ],
+          details: [
+            "Benchmarked the implemented calculations against SKF SimPro commercial software.",
+            "Cross-checked model behavior with NASA publications, Harris examples, and ISO 281.",
+            "Compared model predictions with the available company test-bench evidence.",
+            "Recorded every validation test, reference result, and observed difference in a 200-page validation note.",
+            "Used the measured differences to define the precision of each model without calibrating it against the test-bench results.",
+          ],
+        },
+      ],
+      results: {
+        paragraphs: [
+          "BearingSolver was delivered as a reusable internal Scilab application for deep-groove ball bearing analysis. Calculations that could require approximately 5–10 hours when performed manually were reduced to around 20 ms for selected models, while the complete result set could be generated in under three seconds. Each model’s precision was established through documented comparisons rather than test-bench calibration.",
+        ],
+        completedTitle: "Delivered outcomes",
+        completed: [
+          {
+            title: "Complete engineering workflow",
+            items: [
+              "Life, damage, clearance, deformation, stiffness, contact-pressure, and frictional-loss calculations.",
+              "Axial, radial, and combined loading with prescribed misalignment.",
+              "Multi-case studies, detailed results, load-distribution plots, and contact-surface visualization.",
+            ],
+          },
+          {
+            title: "Calculation time reduced",
+            items: [
+              "Selected calculations reduced from approximately 5–10 hours of manual work to around 20 ms.",
+              "Complete application outputs generated in under three seconds.",
+              "Study files made analyses repeatable and easier to compare.",
+            ],
+          },
+          {
+            title: "Precision and traceability documented",
+            items: [
+              "Predictions compared with SKF SimPro, NASA publications, Harris references, ISO 281, and available test-bench results.",
+              "Model precision defined from the observed differences and recorded in a 200-page validation note.",
+              "Modeling theory documented in a 65-page technical note, with a separate user guide for engineering reuse.",
+            ],
+          },
+        ],
+      },
+    },
     homepageProof: [
-      "Physics-based models for lifetime, losses and stiffness",
-      "GUI for repeatable engineering calculations",
-      "Validation against software, literature and ISO standards",
+      "Selected calculations reduced from 5–10 hours to approximately 20 ms",
+      "Complete bearing-analysis workflow delivered as a standalone Scilab application",
+      "Model precision established through multi-source validation and a 200-page validation note",
     ],
     context:
-      "Accurate bearing selection requires evaluating several performance parameters early in the mechanical design process: lifetime, power losses, deflections, stresses, stiffness and contact behavior.",
+      "Bearing sizing required a faster, transparent alternative to repeated manual calculations and opaque commercial workflows.",
     roleDescription:
-      "I developed a custom engineering tool to automate bearing performance calculations and support design decisions during early-stage engineering studies.",
+      "I researched, modeled, programmed, validated, and documented a Scilab application for deep-groove ball bearing analysis.",
     implementation: [
-      "Conducted a structured literature review to define modeling assumptions, limits and relevant calculation methods.",
-      "Built physics-based computational models for bearing lifespan, power losses, deflections, stresses and stiffness.",
-      "Designed and programmed a Scilab-based GUI to make calculations fast, repeatable and usable by engineers.",
-      "Created result views and calculation screens to compare behavior across operating conditions.",
-      "Validated model outputs against commercial software, scientific literature and ISO standards.",
+      "Defined the engineering requirements and planned the work from research through validation.",
+      "Built bearing models from Hertzian theory, ISO 281, Harris references, and nonlinear equilibrium methods.",
+      "Developed the Scilab GUI, case management, result visualisations, and model-validity safeguards.",
+      "Validated results against SKF SimPro, NASA publications, reference literature, standards, and test evidence.",
+      "Documented the models, validation cases, error margins, and user workflow.",
     ],
     proof: [
-      "The tool combined theoretical modeling with a usable engineering interface.",
-      "The calculation output was cross-checked against external references.",
-      "The project produced a reusable internal tool rather than a one-off spreadsheet.",
+      "The project produced a functional application rather than a one-off calculation workbook.",
+      "Independent comparison paths established known validation margins for the implemented models.",
+      "Technical, validation, and user documentation made the calculations traceable and reusable.",
     ],
     results: [
-      "Delivered a reusable engineering tool supporting bearing selection and early-stage design decisions.",
-      "Improved calculation repeatability across operating conditions.",
-      "Built practical knowledge in mechanical reliability, fatigue mechanisms and high-load failure modes.",
+      "Delivered a reusable internal bearing-analysis application with complete outputs in under three seconds.",
+      "Reduced selected calculations from hours of manual work to millisecond-scale execution.",
+      "Made model assumptions, limitations, and validation evidence visible to the engineering team.",
     ],
     technologies: [
-      "Scilab",
-      "GUI development",
-      "Bearing lifespan modeling",
-      "Power loss modeling",
-      "Stress and stiffness calculation",
-      "ISO-based validation",
+      "Deep-groove ball bearing mechanics",
+      "Hertzian contact mechanics",
+      "Load distribution & contact pressure",
+      "Operating clearance & thermal fits",
+      "Radial, axial & combined-load equilibrium",
+      "Deformation & stiffness modeling",
+      "Bearing life & damage prediction",
+      "Lubrication & frictional-loss modeling",
+      "Nonlinear numerical solving",
+      "Engineering GUI development",
+      "Model verification & precision assessment",
     ],
-    tools: ["Scilab", "Scientific literature", "ISO standards", "Commercial validation software"],
+    toolsTitle: "Tools, standards & validation references",
+    tools: [
+      "Scilab",
+      "SKF SimPro",
+      "ISO 281:2007",
+      "Harris & Kotzalas bearing references",
+      "NASA bearing-analysis publications",
+      "SKF technical resources",
+      "British Gear Association training material",
+      "Involute Transmissions test-bench results",
+    ],
   },
 ];
 
