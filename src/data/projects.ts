@@ -106,7 +106,7 @@ export const projects: Project[] = [
       },
     ],
     summary:
-      "End-to-end development of a compact, cost-effective HiL platform enabling engineers to validate VCU software in parallel from their own workstations.",
+      "Development of a compact, cost-effective HiL platform designed to enable engineers to validate VCU software in parallel from their own workstations.",
     approach: {
       problem: {
         paragraphs: [

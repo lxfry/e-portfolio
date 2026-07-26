@@ -35,21 +35,21 @@ const skills = [
 const experience = [
   {
     title: "Electronics Hardware Engineer",
-    company: "Renco GmbH",
+    company: "Renco GmbH - Germany",
     period: "March 2026 - Present",
-    text: "Designing a compact Simulation Control Unit for automotive ECU HiL validation, including architecture, schematic design, component selection, STM32 allocation and early validation.",
+    text: "Developing a compact, cost-effective HiL platform for parallel VCU software validation, from requirements and architecture through schematic design and early hardware testing.",
   },
   {
     title: "Hardware / Embedded Systems Engineer",
     company: "ESTACARS Formula Student - France",
     period: "September 2023 - January 2026",
-    text: "Designed and validated safety-critical PCBAs, diagnosed EMI issues, supported powertrain commissioning and performed system-level vehicle integration.",
+    text: "Designed and validated safety-critical electronics, resolved inverter-induced RS-485 communication failures, and supported high-voltage powertrain integration for a Formula Student EV.",
   },
   {
     title: "R&D Engineer",
-    company: "Involute Transmissions",
+    company: "Involute Transmissions - France",
     period: "May 2025 - October 2025",
-    text: "Developed a Scilab engineering tool for bearing performance calculations, validated against commercial software, literature and ISO standards.",
+    text: "Developed a standalone Scilab bearing-analysis application that reduced selected calculations from 5–10 hours to approximately 20 ms, with model precision documented through multi-source validation.",
   },
 ];
 
@@ -111,7 +111,7 @@ export default function Home() {
             <p className="mt-3 text-lg font-semibold uppercase text-cyan-300 sm:text-xl">
               PCB | EMBEDDED SYSTEMS | SYSTEM INTEGRATION
             </p>
-            <p className="mt-8 max-w-3xl text-lg leading-8 text-slate-300">
+            <p className="mt-8 max-w-3xl text-lg leading-8 text-slate-300 sm:text-justify">
               I design hardware from requirements to validation: mixed-signal
               I/O, power drivers, protection circuitry, communication
               interfaces, embedded control and system-level debugging.
@@ -167,24 +167,24 @@ export default function Home() {
               Hardware engineering with a practical lab mindset.
             </h2>
           </div>
-          <div className="space-y-5 text-lg leading-8 text-slate-300">
+          <div className="space-y-5 text-lg leading-8 text-slate-300 sm:[&_p]:text-justify">
             <p>
-              I am a hardware electronics engineer focused on PCB design,
-              embedded control and validation for real-world systems.
+              I am an electronics hardware engineer specializing in PCB design,
+              embedded control, and validation for real-world systems.
             </p>
             <p>
-              My work sits between circuit design, lab testing and system
-              integration. I enjoy turning technical requirements into reliable
-              electronics: selecting components, designing schematics, reviewing
-              PCB constraints, bringing boards up on the bench and debugging
-              issues with measurement tools.
+              My work bridges circuit design, lab testing, and system
+              integration. I enjoy translating technical requirements into
+              reliable electronics—from component selection and schematic
+              design to PCB review, board bring-up, and measurement-led
+              debugging.
             </p>
             <p>
-              I am especially interested in automotive, robotics and embedded
-              systems, where electronics must be robust, measurable and
-              practical. My goal is to build hardware that is not only
-              functional on paper, but validated, understandable and ready to
-              integrate into a complete system.
+              I am particularly interested in robotics, automotive
+              applications, and embedded systems, where electronics must be
+              robust, measurable, and practical. My goal is to develop hardware
+              that is not only functional on paper, but validated, well
+              understood, and ready for integration into a complete system.
             </p>
             <div className="flex flex-wrap gap-3 pt-2">
               {[
@@ -310,14 +310,14 @@ export default function Home() {
                   <h3 className="mt-3 text-2xl font-semibold text-white">
                     {project.shortTitle}
                   </h3>
-                  <p className="mt-4 leading-7 text-slate-300">
+                  <p className="mt-4 leading-7 text-slate-300 sm:text-justify">
                     {project.summary}
                   </p>
                   <ul className="mt-5 space-y-2 text-sm text-slate-300">
                     {project.homepageProof.map((item) => (
                       <li key={item} className="flex gap-2">
                         <span className="mt-2 h-1.5 w-1.5 rounded-full bg-cyan-300" />
-                        <span>{item}</span>
+                        <span className="sm:text-justify">{item}</span>
                       </li>
                     ))}
                   </ul>
@@ -340,7 +340,7 @@ export default function Home() {
             Experience
           </p>
           <h2 className="mt-3 text-3xl font-bold text-white">
-            Practical engineering across hardware, embedded systems and R&amp;D.
+            Engineering experience across electronics, embedded systems, and R&amp;D.
           </h2>
           <div className="relative mt-10 max-w-4xl">
             <div className="absolute bottom-3 left-[7px] top-3 w-px bg-gradient-to-b from-cyan-300 via-cyan-300/40 to-white/10" />
@@ -359,7 +359,7 @@ export default function Home() {
                 <p className="mt-1 text-sm font-semibold text-slate-300">
                   {item.company}
                 </p>
-                <p className="mt-4 max-w-3xl leading-7 text-slate-300">
+                <p className="mt-4 max-w-3xl leading-7 text-slate-300 sm:text-justify">
                   {item.text}
                 </p>
               </article>
@@ -383,7 +383,9 @@ export default function Home() {
                   <dt className="font-semibold text-white sm:shrink-0">
                     {skill.category}:
                   </dt>
-                  <dd className="text-slate-300">{skill.items}</dd>
+                  <dd className="text-slate-300 sm:text-justify">
+                    {skill.items}
+                  </dd>
                 </div>
               ))}
             </dl>
@@ -399,7 +401,7 @@ export default function Home() {
           <h2 className="mt-3 text-3xl font-bold text-white">
             ESTACA - Graduate School of Engineering
           </h2>
-          <p className="mt-4 max-w-5xl text-lg leading-8 text-slate-300">
+          <p className="mt-4 max-w-5xl text-lg leading-8 text-slate-300 sm:text-justify">
             Master of Engineering, specialized in Automotive Embedded Systems
             and Electrical Engineering.
             <br />
@@ -417,7 +419,7 @@ export default function Home() {
             <h2 className="mt-3 text-3xl font-bold text-white">
               Available from October 2026.
             </h2>
-            <p className="mt-4 max-w-2xl leading-7 text-slate-300">
+            <p className="mt-4 max-w-2xl leading-7 text-slate-300 sm:text-justify">
               Open to international relocation and focused on PCB/PCBA design
               for robotic and embedded control systems.
             </p>
