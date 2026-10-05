@@ -81,7 +81,7 @@ export const projects: Project[] = [
     shortTitle: "Compact HiL / Simulation Control Unit",
     company: "Renco GmbH — Germany",
     homepageCompany: "Renco GmbH (Germany)",
-    period: "March 2026 - Present",
+    period: "March 2026 - September 2026",
     role: "Electronics Hardware Engineer",
     category: "Automotive VCU validation",
     image: "/portfolio-pages/compact-hil-project-hero.png",
@@ -100,7 +100,7 @@ export const projects: Project[] = [
       },
     ],
     summary:
-      "Development of a compact, cost-effective HiL platform designed to enable engineers to validate VCU software in parallel from their own workstations.",
+      "End-to-end development of a flexible and compact hardware-in-the-loop (HiL) system from requirements definition and electrical architecture through component selection, schematic and PCB design, prototyping, bring-up, and debugging.",
     approach: {
       problem: {
         paragraphs: [
@@ -875,7 +875,7 @@ export const projects: Project[] = [
     ],
     homepageImageLayout: "wide-left",
     summary:
-      "Oscilloscope-led diagnosis of inverter-induced interference, followed by hardware changes that restored reliable communication during high-voltage operation.",
+      "Oscilloscope-led diagnosis of inverter-induced interference, followed by shielding strategies and filtering that restored reliable communication during high-voltage operation.",
     summaryFullWidth: true,
     approach: {
       problem: {
@@ -1127,7 +1127,7 @@ export const projects: Project[] = [
     ],
     homepageImageLayout: "portrait-left",
     summary:
-      "Scilab engineering tool for deep-groove ball bearing sizing, combining traceable physics models, a reusable GUI, and validated outputs in under three seconds.",
+      "Scilab-based engineering tool with GUI to automate bearing performance calculations and support engineering decision-making",
     summaryFullWidth: true,
     approach: {
       problem: {

@@ -5,22 +5,22 @@ import { projects } from "@/data/projects";
 
 const skills = [
   {
-    category: "Hardware Design",
+    category: "Electronics",
     items:
-      "PCB design, hierarchical schematics and reusable blocks, layout, signal conditioning, ESD/EMI protection, power electronics, driver circuits",
+      "Electrical system architecture, schematic capture, PCB design & layout, power distribution, protection circuitry, wiring harness design, EMI/EMC, signal integrity, hardware bring-up, debugging & validation",
   },
   {
-    category: "Embedded Interfaces",
+    category: "Embedded Systems & Interfaces",
     items:
-      "STM32, SPI, I²C, UART, CAN, LIN, Ethernet, PWM, bridge conversion, ADC/DAC",
+      "STM32, microcontrollers, RS-485, SPI, I\u00B2C, UART/USART, CAN, LIN, Ethernet, USB, PWM, ADC/DAC",
   },
   {
     category: "EDA Tools",
-    items: "KiCad, Altium Designer, LTspice, STM32CubeMX",
+    items: "Altium Designer, KiCad, LTspice",
   },
   {
     category: "Programming",
-    items: "C, C++, Python, MATLAB/Simulink, Scilab, LaTeX",
+    items: "C, C++, Python, MATLAB/Simulink, LaTeX",
   },
   {
     category: "Mechanical & FEA",
@@ -28,7 +28,7 @@ const skills = [
   },
   {
     category: "Languages",
-    items: "French native, English fluent, Spanish elementary",
+    items: "French native, English fluent, German elementary, Spanish elementary",
   },
 ];
 
@@ -36,20 +36,20 @@ const experience = [
   {
     title: "Electronics Hardware Engineer",
     company: "Renco GmbH - Germany",
-    period: "March 2026 - Present",
-    text: "Developing a compact, cost-effective HiL platform for parallel VCU software validation, from requirements and architecture through schematic design and early hardware testing.",
+    period: "March 2026 - September 2026",
+    text: "Leading the end-to-end development of a flexible and compact hardware-in-the-loop (HiL) system from requirements definition and electrical architecture through component selection, schematic and PCB design, prototyping, bring-up, and debugging.",
   },
   {
     title: "Hardware / Embedded Systems Engineer",
     company: "ESTACARS Formula Student - France",
     period: "September 2023 - January 2026",
-    text: "Designed and validated safety-critical electronics, resolved inverter-induced RS-485 communication failures, and supported high-voltage powertrain integration for a Formula Student EV.",
+    text: "Designed, prototyped, integrated and validated PCBs for safety-critical electronics, solved inverter-induced RS-485 communication failures, and supported high-voltage powertrain integration for a Formula Student EV.",
   },
   {
     title: "R&D Engineer",
     company: "Involute Transmissions - France",
     period: "May 2025 - October 2025",
-    text: "Developed a standalone Scilab bearing-analysis application that reduced selected calculations from 5–10 hours to approximately 20 ms, with model precision documented through multi-source validation.",
+    text: "Designed and programmed a Scilab-based engineering tool with GUI to automate bearing performance calculations and support engineering decision-making.",
   },
 ];
 
@@ -69,7 +69,7 @@ export default function Home() {
       <div className="pointer-events-none fixed inset-0 z-0 bg-gradient-to-r from-[#05070a]/90 via-[#05070a]/55 to-[#05070a]/20" />
       <header className="sticky top-0 z-30 border-b border-white/10 bg-[linear-gradient(180deg,#071225_0%,#050b18_100%)] shadow-[inset_0_-18px_35px_rgba(0,0,0,0.18)] backdrop-blur">
         <nav
-          className="mx-auto flex max-w-7xl items-center justify-between px-5 py-4"
+          className="mx-auto flex max-w-7xl flex-wrap items-center justify-between px-5 py-4"
           aria-label="Main navigation"
         >
           <a href="#top" className="font-semibold text-white">
@@ -89,6 +89,26 @@ export default function Home() {
               Skills
             </a>
             <a href="#contact" className="transition hover:text-cyan-300">
+              Contact
+            </a>
+          </div>
+          <div
+            className="mt-3 flex w-full gap-4 overflow-x-auto pb-1 text-sm text-slate-300 md:hidden"
+            aria-label="Mobile navigation"
+          >
+            <a href="#about" className="shrink-0 transition hover:text-cyan-300">
+              About
+            </a>
+            <a href="#projects" className="shrink-0 transition hover:text-cyan-300">
+              Projects
+            </a>
+            <a href="#experience" className="shrink-0 transition hover:text-cyan-300">
+              Experience
+            </a>
+            <a href="#skills" className="shrink-0 transition hover:text-cyan-300">
+              Skills
+            </a>
+            <a href="#contact" className="shrink-0 transition hover:text-cyan-300">
               Contact
             </a>
           </div>
@@ -112,9 +132,9 @@ export default function Home() {
               PCB | EMBEDDED SYSTEMS | SYSTEM INTEGRATION
             </p>
             <p className="mt-8 max-w-3xl text-lg leading-8 text-slate-300 sm:text-justify">
-              I design hardware from requirements to validation: mixed-signal
-              I/O, power drivers, protection circuitry, communication
-              interfaces, embedded control and system-level debugging.
+              I develop electronic systems from initial requirements through
+              electrical architecture, component selection, schematic and PCB
+              design, prototype bring-up, system integration, and validation.
             </p>
             <div className="mt-8 flex flex-wrap gap-3">
               <a
@@ -134,6 +154,12 @@ export default function Home() {
                 className="rounded-lg border border-white/15 px-5 py-3 text-sm font-semibold text-white transition hover:border-cyan-300 hover:text-cyan-200"
               >
                 LinkedIn
+              </a>
+              <a
+                href="https://github.com/lxfry"
+                className="rounded-lg border border-white/15 px-5 py-3 text-sm font-semibold text-white transition hover:border-cyan-300 hover:text-cyan-200"
+              >
+                GitHub
               </a>
             </div>
           </div>
@@ -180,9 +206,9 @@ export default function Home() {
               debugging.
             </p>
             <p>
-              I am particularly interested in robotics, automotive
-              applications, and embedded systems, where electronics must be
-              robust, measurable, and practical. My goal is to develop hardware
+              I am particularly interested in robotics, UAVs, autonomous
+              systems and defence technologies, where electronics must be
+              robust, measurable, and practical. My focus is on developing hardware
               that is not only functional on paper, but validated, well
               understood, and ready for integration into a complete system.
             </p>
@@ -210,7 +236,7 @@ export default function Home() {
       <section id="projects" className="relative z-10 px-5 py-16 sm:py-20">
         <div className="mx-auto max-w-7xl">
           <h2 className="text-sm font-semibold uppercase text-cyan-300">
-            Latest projects
+            Selected projects
           </h2>
           <p
             className="mt-3 flex flex-wrap items-center gap-x-3 gap-y-2 text-3xl font-bold text-white sm:text-4xl"
@@ -289,12 +315,12 @@ export default function Home() {
                     {project.period}
                   </p>
                   {project.slug === "simulation-control-unit" ? (
-                    <p className="mt-3 inline-flex items-center gap-2 text-sm font-semibold tracking-wide text-orange-300">
+                    <p className="mt-3 inline-flex items-center gap-2 text-sm font-semibold tracking-wide text-emerald-300">
                       <span
                         aria-hidden="true"
-                        className="h-2 w-2 rounded-full bg-orange-400"
+                        className="h-2 w-2 rounded-full bg-emerald-400"
                       />
-                      IN PROGRESS
+                      VALIDATED DESIGN
                     </p>
                   ) : project.slug === "bspd-safety-critical-pcb" ||
                     project.slug === "rs485-emi-diagnosis" ||
@@ -399,13 +425,12 @@ export default function Home() {
             Education
           </p>
           <h2 className="mt-3 text-3xl font-bold text-white">
-            ESTACA - Graduate School of Engineering
+            Master of Engineering
           </h2>
           <p className="mt-4 max-w-5xl text-lg leading-8 text-slate-300 sm:text-justify">
-            Master of Engineering, specialized in Automotive Embedded Systems
-            and Electrical Engineering.
+            ESTACA &ndash; Graduate School of Engineering
             <br />
-            Expected graduation: Fall 2026.
+            Specialized in Automotive Embedded Systems and Electrical Engineering
           </p>
         </div>
       </section>
@@ -417,11 +442,10 @@ export default function Home() {
               Contact
             </p>
             <h2 className="mt-3 text-3xl font-bold text-white">
-              Available from October 2026.
+              Let&apos;s discuss your next hardware challenge.
             </h2>
             <p className="mt-4 max-w-2xl leading-7 text-slate-300 sm:text-justify">
-              Open to international relocation and focused on PCB/PCBA design
-              for robotic and embedded control systems.
+              Open to international relocation and freelance projects.
             </p>
           </div>
           <ContactForm />

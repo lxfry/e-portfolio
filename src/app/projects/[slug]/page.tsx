@@ -101,12 +101,12 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
               </p>
             ) : null}
             {project.slug === "simulation-control-unit" ? (
-              <p className="mt-5 inline-flex items-center gap-2 text-sm font-semibold tracking-wide text-orange-300">
+              <p className="mt-5 inline-flex items-center gap-2 text-sm font-semibold tracking-wide text-emerald-300">
                 <span
                   aria-hidden="true"
-                  className="h-2 w-2 rounded-full bg-orange-400"
+                  className="h-2 w-2 rounded-full bg-emerald-400"
                 />
-                IN PROGRESS
+                VALIDATED DESIGN
               </p>
             ) : null}
             <div className="mt-7 grid gap-3 text-sm text-slate-300 sm:grid-cols-3">
