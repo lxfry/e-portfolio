@@ -82,10 +82,12 @@ export function ContactForm() {
         },
         body: JSON.stringify(payload),
       });
-      const result = (await response.json()) as { message?: string };
+      const result = (await response
+        .json()
+        .catch(() => null)) as { message?: string } | null;
 
       if (!response.ok) {
-        throw new Error(result.message ?? "The message could not be sent.");
+        throw new Error(result?.message ?? "The message could not be sent.");
       }
 
       form.reset();

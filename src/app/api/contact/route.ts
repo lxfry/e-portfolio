@@ -126,23 +126,35 @@ export async function POST(request: Request) {
     <p>${escapeHtml(message).replaceAll("\n", "<br />")}</p>
   `;
 
-  const response = await fetch(resendEndpoint, {
-    method: "POST",
-    headers: {
-      Authorization: `Bearer ${apiKey}`,
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({
-      from: fromEmail,
-      to: [toEmail],
-      subject: `Portfolio contact from ${name}`,
-      text,
-      html,
+  let response: Response;
+
+  try {
+    response = await fetch(resendEndpoint, {
+      method: "POST",
       headers: {
-        "Reply-To": email,
+        Authorization: `Bearer ${apiKey}`,
+        "Content-Type": "application/json",
       },
-    }),
-  });
+      body: JSON.stringify({
+        from: fromEmail,
+        to: [toEmail],
+        subject: `New contact message on e-Portfolio from ${name}`, 
+        text,
+        html,
+        headers: {
+          "Reply-To": email,
+        },
+      }),
+    });
+  } catch {
+    return Response.json(
+      {
+        message:
+          "The email service could not be reached. Please try again later.",
+      },
+      { status: 502 },
+    );
+  }
 
   if (!response.ok) {
     return Response.json(
