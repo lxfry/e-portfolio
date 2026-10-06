@@ -315,13 +315,17 @@ function MethodImages({ images }: { images: MethodImage[] }) {
   );
   const usesCenteredThreeImageLayout =
     images.length === 3 && usesEqualHeight;
+  const usesWideLastImageLayout =
+    images.length === 4 && images[3].displayWidth === "wide";
+  const usesAsymmetricImageLayout =
+    images.length === 3 || usesWideLastImageLayout;
 
   return (
     <div
       className={`mx-auto mt-6 grid items-center gap-4 ${
         usesCenteredThreeImageLayout
           ? "max-w-5xl items-start sm:grid-cols-2"
-          : images.length === 3
+          : usesAsymmetricImageLayout
           ? "max-w-5xl items-start sm:grid-cols-[minmax(0,0.4fr)_minmax(0,1fr)]"
           : images.length > 1 && usesEqualHeight
           ? "max-w-5xl lg:grid-cols-[repeat(2,max-content)] lg:items-start lg:justify-center"
@@ -355,7 +359,9 @@ function MethodImages({ images }: { images: MethodImage[] }) {
               ? "w-full justify-self-center sm:col-span-2 sm:w-[var(--equal-height-width)]"
               : usesCenteredThreeImageLayout
               ? "w-full justify-self-center sm:w-[var(--equal-height-width)]"
-              : images.length === 3 && imageIndex === 0
+              : usesWideLastImageLayout && imageIndex === 3
+              ? "w-full sm:col-span-2"
+              : usesAsymmetricImageLayout && imageIndex === 0
               ? "sm:row-span-2"
               : image.fit === "equal-height"
               ? "w-full justify-self-center lg:w-[var(--equal-height-width)]"
@@ -365,7 +371,7 @@ function MethodImages({ images }: { images: MethodImage[] }) {
           <div
             className={`overflow-hidden rounded-lg border border-white/10 bg-white ${
               images.length > 1 &&
-              images.length !== 3 &&
+              !usesAsymmetricImageLayout &&
               image.fit !== "equal-height"
                 ? "aspect-[4/3]"
                 : ""
@@ -381,7 +387,7 @@ function MethodImages({ images }: { images: MethodImage[] }) {
                   ? usesCenteredThreeImageLayout
                     ? "h-auto w-full object-contain sm:h-[var(--equal-height-height)]"
                     : "h-auto w-full lg:h-[var(--equal-height-height)]"
-                  : images.length > 1 && images.length !== 3
+                  : images.length > 1 && !usesAsymmetricImageLayout
                   ? `h-full w-full ${
                       image.fit === "cover" ? "object-cover" : "object-contain"
                     }`

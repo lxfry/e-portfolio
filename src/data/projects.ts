@@ -104,7 +104,7 @@ export const projects: Project[] = [
     approach: {
       problem: {
         paragraphs: [
-          "The company needed a faster and more automated way to validate embedded software on its VCUs. Several employees may need to test VCU software at the same time, and sharing one validation system creates waiting time and limits parallel development. The long-term objective is therefore to provide one validation platform per employee.",
+          "The company needed a faster and more automated way to validate embedded software on its VCUs. Several employees may need to test VCU software at the same time, and sharing three validation systems among four validation engineers and five software engineers creates waiting time and limits parallel development. The long-term objective is therefore to provide one validation platform per employee.",
           "Commercial Hardware-in-the-Loop systems provide the required functionality, but purchasing several systems is not financially realistic. In addition to the hardware cost, these systems generally require dedicated software licences. The company therefore needed an internal platform that covers its three main VCUs without requiring a hardware modification when switching between test configurations.",
         ],
         requirements: [
@@ -128,7 +128,7 @@ export const projects: Project[] = [
           "PWM signal generation and measurement.",
           "CAN, CAN FD, LIN, Ethernet, SPI, USART, and I²C interfaces.",
           "Compatible with both 12 V and 24 V systems.",
-          "Software-configurable pull-up and pull-down selection, signal generation, and measurement.",
+          "Software-configurable pull-up and pull-down selection.",
           "An extensible architecture that supports additional functions and interface boards.",
         ],
       },
@@ -193,6 +193,13 @@ export const projects: Project[] = [
               alt: "Repeated analog-output schematic block in Altium Designer",
               width: 1047,
               height: 170,
+            },
+            {
+              src: "/portfolio-pages/compact-hil-ethernet-schematic.png",
+              alt: "Ethernet interface schematic in Altium Designer",
+              width: 1763,
+              height: 1170,
+              displayWidth: "wide",
             },
           ],
         },
