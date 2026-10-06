@@ -228,19 +228,28 @@ function ProjectApproach({
 
         <ApproachBlock number="04" title="Results" transparent>
           <Paragraphs items={approach.results.paragraphs} />
-          <Subheading>
-            {approach.results.completedTitle ?? "Completed at this stage"}
-          </Subheading>
-          <div className="space-y-6">
-            {approach.results.completed.map((group) => (
-              <div key={group.title}>
-                <h4 className="font-semibold text-cyan-200">{group.title}</h4>
-                <div className="mt-3">
-                  <Bullets items={group.items} />
-                </div>
+          {approach.results.completed?.length ? (
+            <>
+              <Subheading>
+                {approach.results.completedTitle ?? "Completed at this stage"}
+              </Subheading>
+              <div className="space-y-6">
+                {approach.results.completed.map((group) => (
+                  <div key={group.title}>
+                    <h4 className="font-semibold text-cyan-200">
+                      {group.title}
+                    </h4>
+                    <div className="mt-3">
+                      <Bullets items={group.items} />
+                    </div>
+                  </div>
+                ))}
               </div>
-            ))}
-          </div>
+            </>
+          ) : null}
+          {approach.results.images ? (
+            <MethodImages images={approach.results.images} />
+          ) : null}
         </ApproachBlock>
 
         {approach.nextSteps?.length ? (
@@ -319,6 +328,56 @@ function MethodImages({ images }: { images: MethodImage[] }) {
     images.length === 4 && images[3].displayWidth === "wide";
   const usesAsymmetricImageLayout =
     images.length === 3 || usesWideLastImageLayout;
+  const usesPrototypeValidationLayout =
+    images.length === 5 && images[0].layout === "prototype-validation";
+
+  if (usesPrototypeValidationLayout) {
+    return (
+      <div className="mx-auto mt-6 grid max-w-5xl gap-4 [container-type:inline-size] sm:grid-cols-[minmax(0,1.25fr)_minmax(0,0.75fr)]">
+        <div className="grid gap-4">
+          {images.slice(0, 3).map((image, imageIndex) => (
+            <figure
+              key={image.src}
+              className={
+                imageIndex === 2
+                  ? "min-w-0 sm:h-[calc(29.6875cqw-1.296875rem)]"
+                  : "min-w-0"
+              }
+            >
+              <div
+                className={`aspect-video overflow-hidden rounded-lg border border-white/10 bg-slate-950 ${
+                  imageIndex === 2 ? "sm:h-full sm:aspect-auto" : ""
+                }`}
+              >
+                <Image
+                  src={image.src}
+                  alt={image.alt}
+                  width={image.width}
+                  height={image.height}
+                  className="h-full w-full object-cover"
+                />
+              </div>
+            </figure>
+          ))}
+        </div>
+        <div className="grid gap-4">
+          {images.slice(3).map((image) => (
+            <figure key={image.src} className="min-w-0">
+              <div className="aspect-[3/4] overflow-hidden rounded-lg border border-white/10 bg-slate-950">
+                <Image
+                  src={image.src}
+                  alt={image.alt}
+                  width={image.width}
+                  height={image.height}
+                  className="h-full w-full object-cover"
+                />
+              </div>
+            </figure>
+          ))}
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div

@@ -44,6 +44,7 @@ export type Project = {
           displayWidth?: "default" | "medium" | "wide";
           displayHeightRem?: number;
           fit?: "contain" | "cover" | "equal-height";
+          layout?: "prototype-validation";
         }[];
       }[];
       images?: {
@@ -55,14 +56,23 @@ export type Project = {
         displayWidth?: "default" | "medium" | "wide";
         displayHeightRem?: number;
         fit?: "contain" | "cover" | "equal-height";
+        layout?: "prototype-validation";
       }[];
     }[];
     results: {
       paragraphs: string[];
       completedTitle?: string;
-      completed: {
+      completed?: {
         title: string;
         items: string[];
+      }[];
+      images?: {
+        src: string;
+        alt: string;
+        width: number;
+        height: number;
+        displayWidth?: "default" | "medium" | "wide";
+        fit?: "contain" | "cover" | "equal-height";
       }[];
     };
     nextSteps?: {
@@ -78,7 +88,7 @@ export const projects: Project[] = [
   {
     slug: "simulation-control-unit",
     title: "Development of a Compact Hardware-in-the-Loop Platform",
-    shortTitle: "Compact HiL / Simulation Control Unit",
+    shortTitle: "Compact Hardware-in-the-Loop",
     company: "Renco GmbH — Germany",
     homepageCompany: "Renco GmbH (Germany)",
     period: "March 2026 - September 2026",
@@ -87,16 +97,17 @@ export const projects: Project[] = [
     image: "/portfolio-pages/compact-hil-project-hero.png",
     homepageImages: [
       {
-        src: "/portfolio-pages/compact-hil-oscilloscope-testing.jpeg",
-        alt: "STM32 prototype undergoing oscilloscope validation",
+        src: "/portfolio-pages/compact-hil-ethernet-firmware-test.jpg",
+        alt: "Firmware test output displayed on a development workstation",
       },
       {
-        src: "/portfolio-pages/compact-hil-system-architecture.png",
-        alt: "Compact HiL system architecture",
+        src: "/portfolio-pages/compact-hil-ethernet-prototype-soldering.jpg",
+        alt: "Hand assembly and soldering of the Ethernet PHY prototype",
       },
       {
-        src: "/portfolio-pages/compact-hil-top-level-schematic.png",
-        alt: "Compact HiL top-level schematic",
+        src: "/portfolio-pages/compact-hil-stm32-oscilloscope-validation.jpg",
+        alt: "STM32F407G-DISC1-based prototype under oscilloscope measurement",
+        fit: "cover",
       },
     ],
     summary:
@@ -220,99 +231,69 @@ export const projects: Project[] = [
           ],
         },
         {
-          title: "Step 5 — Prototyping and experimental validation",
+          title: "Step 5 — Prototyping and functional validation",
           paragraphs: [
-            "The project is currently in the prototyping phase. Using one STM32F407G-DISC1 evaluation board, I have tested the microcontroller’s digital and analog I/O, PWM generation and measurement, timer resources, timing precision, GPIO speed, and peripheral behavior.",
-            "Communication and resource coordination between the two microcontrollers have not yet been tested. Validation of the interface drivers, signal-conditioning stages, protection circuits, and other representative circuit sections will be performed in the next phase. The purpose is to identify limitations before PCB layout and manufacturing, while corrections can still be made at schematic level.",
+            "I translated the system architecture into dedicated functional prototypes, independently designing the schematics, PCB layouts, and 3D assemblies in Altium Designer. Each prototype was produced to de-risk a representative part of the final HiL platform and to validate the design before full-system integration.",
+            "I assembled and soldered the prototype hardware myself, then used an STM32F407G-DISC1 evaluation board as the microcontroller platform for bring-up and functional testing. For every prototype function, I wrote and executed a test plan covering the intended electrical behaviour, firmware interaction, and measurable acceptance criteria.",
+            "Through this work, most of the platform’s core functions have been prototyped and fully validated, including digital and analog I/O behaviour, PWM generation and measurement, timing performance, GPIO operation, and peripheral interfaces. The remaining work focuses on integrating the validated functions into the complete HiL platform and verifying their operation together.",
           ],
           images: [
             {
-              src: "/portfolio-pages/compact-hil-oscilloscope-testing.jpeg",
-              alt: "STM32F407G-DISC1 prototype undergoing signal measurements with an oscilloscope",
-              width: 1536,
-              height: 2048,
-              fit: "equal-height",
+              src: "/portfolio-pages/compact-hil-ethernet-pcb-layout.png",
+              alt: "PCB layout for an Ethernet PHY and STM32 prototype, designed in Altium Designer",
+              width: 1627,
+              height: 731,
+              fit: "cover",
+              layout: "prototype-validation",
             },
             {
-              src: "/portfolio-pages/compact-hil-simulink-testing.jpeg",
-              alt: "STM32 prototype connected to a Simulink test setup during experimental validation",
-              width: 2048,
-              height: 1536,
-              fit: "equal-height",
+              src: "/portfolio-pages/compact-hil-ethernet-pcb-3d.png",
+              alt: "3D assembly view of the Ethernet PHY and STM32 prototype",
+              width: 1552,
+              height: 635,
+              fit: "cover",
+            },
+            {
+              src: "/portfolio-pages/compact-hil-ethernet-prototype-soldering.jpg",
+              alt: "Hand assembly and soldering of the Ethernet PHY prototype",
+              width: 3024,
+              height: 4032,
+              fit: "cover",
+            },
+            {
+              src: "/portfolio-pages/compact-hil-stm32-oscilloscope-validation.jpg",
+              alt: "STM32F407G-DISC1-based prototype under oscilloscope measurement",
+              width: 3024,
+              height: 4032,
+              fit: "cover",
+            },
+            {
+              src: "/portfolio-pages/compact-hil-ethernet-firmware-test.jpg",
+              alt: "Firmware test output displayed on a development workstation",
+              width: 3024,
+              height: 4032,
+              fit: "cover",
             },
           ],
         },
       ],
       results: {
         paragraphs: [
-          "The project has progressed from requirements definition to a complete first schematic-level architecture. The final PCB has not yet been manufactured; current tests are being used to confirm the critical design assumptions before the schematic is frozen.",
+          "The complete system schematic has been delivered to the company with its linked bill of materials (BOM). The design package is supported by a technical design note that documents each functional block, the key engineering decisions, and the associated technical choices.",
+          "A dedicated validation note records the prototype test plans, test evidence, results, and current validation status for the functions assessed. A separate state-of-the-art and development-planning note defines the next phase through concept sketches, reference images, milestones, and target dates.",
+          "The capability summary below provides a concise view of the platform interfaces, I/O resources, power-control functions, and planned expandability.",
         ],
-        completed: [
+        images: [
           {
-            title: "System definition and architecture",
-            items: [
-              "Requirements defined for the company's three main VCUs, including channel counts, electrical levels, communication interfaces, power, and physical constraints.",
-              "High-level system architecture and dual-STM32F407ZGT7 processing architecture established.",
-              "I/O architecture completed for 66 analog channels—33 inputs and 33 outputs—and 116 digital and power I/O channels—50 digital inputs, 25 high-side outputs, 25 low-side outputs, and 16 half-bridge outputs.",
-              "PWM capability allocated across 44 channels up to 2 kHz: 14 PWM inputs and 30 PWM outputs.",
-              "Two CAN/CAN FD interfaces with switchable termination, two LIN interfaces, Ethernet, SPI, USART, and I²C.",
-            ],
-          },
-          {
-            title: "Detailed hardware design",
-            items: [
-              "12 V and 24 V-compatible signal conditioning, configurable pull-up and pull-down functions, and protection circuits designed.",
-              "Complete hierarchical schematic created in Altium Designer using reusable and repeated functional blocks.",
-              "Nearly all components selected and sized, including all resistors and capacitors; the remaining revisions will be driven by circuit-validation results.",
-            ],
-          },
-          {
-            title: "Engineering readiness and validation",
-            items: [
-              "Preliminary BOM, sourcing review, and cost estimate prepared.",
-              "MCU pin, timer, and peripheral allocation prepared in STM32CubeMX.",
-              "Initial MCU-level validation completed for analog and digital I/O, PWM generation and measurement, timer resources, timing precision, GPIO speed, and peripheral behavior.",
-            ],
+            src: "/portfolio-pages/compact-hil-system-capabilities.png",
+            alt: "System capability summary for the compact HiL platform",
+            width: 1759,
+            height: 660,
+            displayWidth: "wide",
+            fit: "contain",
           },
         ],
       },
-      nextSteps: [
-        {
-          title: "1. Prototype and validate critical circuitry",
-          actions: [
-            "Prototype every circuit identified during the design phase as requiring experimental validation.",
-            "Focus testing on complex or performance-critical circuits where functionality, accuracy, or component behavior cannot be confirmed through analysis alone.",
-            "Measure performance under representative operating conditions.",
-            "Update the schematic and component values according to the test results.",
-          ],
-        },
-        {
-          title: "2. Complete the PCB layout and design review",
-          actions: [
-            "Begin the PCB layout after incorporating the prototyping results and finalizing the schematic.",
-            "Define the placement and routing while considering controlled impedance, parasitic track capacitance, signal integrity, grounding, current capacity, and thermal constraints.",
-            "Use AI-assisted checks to support the design-review process alongside standard engineering verification.",
-          ],
-        },
-        {
-          title: "3. Finalize manufacturing data and prepare the test plan",
-          actions: [
-            "Complete the PCB design, manufacturing files, assembly data, and final BOM.",
-            "Order the PCB and components.",
-            "Develop a detailed board bring-up and validation plan in parallel with PCB manufacturing and component procurement.",
-            "Define the required equipment, test sequence, expected results, tolerances, and acceptance criteria.",
-          ],
-        },
-        {
-          title: "4. Assemble, bring up, and validate the board",
-          actions: [
-            "Assemble the PCB and perform a controlled initial bring-up.",
-            "Test the board against the validation plan.",
-            "Verify the functionality, accuracy, timing, communication interfaces, protection circuits, and repeatability of the complete system.",
-            "Document the results and correct any issues identified before approving the design.",
-          ],
-        },
-      ],
     },
     homepageProof: [
       "Dual STM32F407ZGT7 architecture",
@@ -335,15 +316,15 @@ export const projects: Project[] = [
       "Analog signal conditioning",
       "Configurable pull-up / pull-down",
       "Circuit protection",
-      "Model-based design",
+      "C code",
+      "Python",
     ],
     tools: [
       "Altium Designer",
       "STM32CubeMX",
       "STM32CubeProgrammer",
       "MATLAB / Simulink",
-      "STM32 Microcontroller Blockset",
-      "Embedded Coder",
+      "VS Code",
       "Oscilloscope",
       "Frequency generator",
       "STM32F407G-DISC1",
@@ -828,7 +809,7 @@ export const projects: Project[] = [
       "Fail-safe shutdown validated with HV active",
     ],
     technologies: [
-      "Safety-critical analog electronics",
+      "Safety-critical electronics",
       "Analog signal conditioning",
       "Comparator-based hardware logic",
       "Sensor plausibility and fault diagnostics",
@@ -836,10 +817,6 @@ export const projects: Project[] = [
       "Deterministic RC timing",
       "Hall-effect current sensing",
       "Hydraulic pressure sensing",
-      "Linear power-supply design",
-      "PCB design and design for manufacturing",
-      "Formula Student SDC integration",
-      "Requirements-based verification and validation",
     ],
     toolsTitle: "Tools & references",
     tools: [
@@ -848,7 +825,6 @@ export const projects: Project[] = [
       "Microsoft Excel",
       "Oscilloscope",
       "Laboratory DC power supply",
-      "24-turn current-injection test fixture",
       "Component datasheets",
       "FSG 2025 Rulebook",
       "FSG 2025 Technical Inspection Sheets",
@@ -1091,18 +1067,13 @@ export const projects: Project[] = [
       "Differential signal integrity",
       "First-order RC filter design",
       "Grounding and shielding",
-      "High-voltage accumulator integration",
-      "Vehicle-level fault validation",
     ],
     toolsTitle: "Tools & equipment",
     tools: [
       "Tektronix DPO4054 oscilloscope",
       "PuTTY serial terminal and BMS diagnostic logs",
-      "High-voltage accumulator test setup",
-      "Vehicle inverter and powertrain",
       "KiCad schematic capture",
       "Soldering and rework equipment",
-      "RC filter prototype hardware",
     ],
   },
   {

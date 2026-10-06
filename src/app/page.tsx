@@ -212,23 +212,6 @@ export default function Home() {
               that is not only functional on paper, but validated, well
               understood, and ready for integration into a complete system.
             </p>
-            <div className="flex flex-wrap gap-3 pt-2">
-              {[
-                "PCB design",
-                "Embedded control",
-                "Validation",
-                "Debugging",
-                "Automotive",
-                "Robotics",
-              ].map((item) => (
-                <span
-                  key={item}
-                  className="rounded-lg border border-white/10 bg-white/[0.03] px-4 py-2 text-sm text-slate-200"
-                >
-                  {item}
-                </span>
-              ))}
-            </div>
           </div>
         </div>
       </section>

@@ -138,7 +138,7 @@ export async function POST(request: Request) {
       body: JSON.stringify({
         from: fromEmail,
         to: [toEmail],
-        subject: `New contact message on e-Portfolio from ${name}`, 
+        subject: `New contact message on e-Portfolio from ${name}`, 545
         text,
         html,
         headers: {
