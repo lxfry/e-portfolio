@@ -7,7 +7,7 @@ const skills = [
   {
     category: "Electronics",
     items:
-      "Electrical system architecture, schematic capture, PCB design & layout, power distribution, protection circuitry, wiring harness design, EMI/EMC, signal integrity, hardware bring-up, debugging & validation",
+      "Electrical system architecture, schematic capture, PCB design & layout, power distribution, protection circuitry, wiring harness design, EMI/EMC, signal integrity, prototyping, hardware bring-up, debugging & integration",
   },
   {
     category: "Embedded Systems & Interfaces",
@@ -134,7 +134,7 @@ export default function Home() {
             <p className="mt-8 max-w-3xl text-lg leading-8 text-slate-300 sm:text-justify">
               I develop electronic systems from initial requirements through
               electrical architecture, component selection, schematic and PCB
-              design, prototype bring-up, system integration, and validation.
+              design, prototype and bring-up, system integration, and validation.
             </p>
             <div className="mt-8 flex flex-wrap gap-3">
               <a
@@ -195,22 +195,24 @@ export default function Home() {
           </div>
           <div className="space-y-5 text-lg leading-8 text-slate-300 sm:[&_p]:text-justify">
             <p>
-              I am an electronics hardware engineer specializing in PCB design,
-              embedded control, and validation for real-world systems.
+              I am an electronics hardware engineer specialising in PCB design,
+              embedded systems, and system integration for UAVs, robotics, and
+              autonomous defence platforms.
             </p>
             <p>
-              My work bridges circuit design, lab testing, and system
-              integration. I enjoy translating technical requirements into
-              reliable electronics—from component selection and schematic
-              design to PCB review, board bring-up, and measurement-led
-              debugging.
+              My work takes products from early requirements to validated
+              hardware: electrical architecture, component selection, schematic
+              design, PCB layout, prototyping, board bring-up, and
+              measurement-led debugging. I combine practical lab work with
+              systems thinking to turn technical requirements into reliable
+              electronics.
             </p>
             <p>
-              I am particularly interested in robotics, UAVs, autonomous
-              systems and defence technologies, where electronics must be
-              robust, measurable, and practical. My focus is on developing hardware
-              that is not only functional on paper, but validated, well
-              understood, and ready for integration into a complete system.
+              I am particularly drawn to applications where hardware must be
+              robust, measurable, and practical. My focus is on developing
+              electronics that are not merely functional on paper, but well
+              understood, thoroughly validated, and ready to integrate into
+              complete systems.
             </p>
           </div>
         </div>
