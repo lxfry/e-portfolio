@@ -166,12 +166,12 @@ export default function Home() {
 
           <div className="relative overflow-hidden rounded-lg border border-cyan-300/20 bg-slate-950 shadow-2xl shadow-cyan-950/30">
             <Image
-              src="/lucas-frery-portrait.png"
+              src="/lucas-frery-portrait.jpeg"
               alt="Portrait of Lucas Frery"
-              width={1222}
-              height={1222}
+              width={1536}
+              height={2048}
               preload
-              className="aspect-square w-full object-cover object-[center_28%]"
+              className="aspect-square w-full origin-top-right scale-[1.15] object-cover object-bottom"
               sizes="(max-width: 1024px) 100vw, 36vw"
             />
             <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-[#05070a]/70 via-transparent to-cyan-950/10" />
